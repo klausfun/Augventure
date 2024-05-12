@@ -1,8 +1,12 @@
 package service
 
-import "github.com/klausfun/Augventure/pkg/repository"
+import (
+	augventure "github.com/klausfun/Augventure"
+	"github.com/klausfun/Augventure/pkg/repository"
+)
 
 type Authorization interface {
+	CreateUser(user augventure.User) (int, error)
 }
 
 type Event interface {
@@ -22,5 +26,7 @@ type Service struct {
 }
 
 func NewService(repos *repository.Repository) *Service {
-	return &Service{}
+	return &Service{
+		Authorization: NewAuthService(repos.Authorization),
+	}
 }

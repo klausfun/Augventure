@@ -9,7 +9,7 @@ const (
 	sprintsTable      = "sprints"
 	eventsTable       = "events"
 	suggestionsTable  = "suggestions"
-	usersTable        = "users"
+	userTable         = "users"
 	eventStatesTable  = "event_states"
 	sprintStatesTable = "sprint_states"
 )
