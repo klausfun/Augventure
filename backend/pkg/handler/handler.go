@@ -50,6 +50,15 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			sprints.GET("/:id", h.getSprintById)
 			sprints.PUT("/:id", h.updateSprint)
 		}
+
+		suggestions := api.Group("/suggestions")
+		{
+			suggestions.POST("/", h.createSuggestions)
+			suggestions.DELETE("/:id", h.deleteSuggestions)
+			suggestions.GET("/", h.getSuggestionsBySprintId)
+			suggestions.PUT("/:id/vote", h.voteSuggestions)
+			//suggestions.PUT("/:id/add_media", h.addMedia)
+		}
 	}
 
 	return router
