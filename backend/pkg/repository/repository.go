@@ -7,7 +7,7 @@ import (
 
 type Authorization interface {
 	CreateUser(user augventure.User) (int, error)
-	GetUser(username, password, email string) (augventure.User, error)
+	GetUser(password, email string) (augventure.User, error)
 }
 
 type Event interface {

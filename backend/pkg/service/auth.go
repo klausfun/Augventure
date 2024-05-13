@@ -34,8 +34,8 @@ func (s *AuthService) CreateUser(user augventure.User) (int, error) {
 	return s.repo.CreateUser(user)
 }
 
-func (s *AuthService) GenerateToken(username, password, email string) (string, error) {
-	user, err := s.repo.GetUser(username, generatePasswordHash(password), email)
+func (s *AuthService) GenerateToken(password, email string) (string, error) {
+	user, err := s.repo.GetUser(generatePasswordHash(password), email)
 	if err != nil {
 		return "", err
 	}
