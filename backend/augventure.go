@@ -1,10 +1,14 @@
 package augventure
 
 type Event struct {
-	Id          int    `json:"id" db:"id"`
-	Title       string `json:"title" binding:"required"`
-	Description string `json:"description" binding:"required"`
-	Start       string `json:"start" binding:"required"`
+	Id           int    `json:"id" db:"id"`
+	Title        string `json:"title" db:"title" binding:"required"`
+	Description  string `json:"description" db:"description" binding:"required"`
+	Start        string `json:"start_date" db:"start_date" binding:"required"`
+	PictureUrl   string `json:"picture_url" db:"picture_url"`
+	AuthorId     int    `json:"author_id" db:"author_id"`
+	StateId      int    `json:"state_id" db:"state_id"`
+	CreationDate string `json:"creation_date" db:"creation_date"`
 }
 
 const (

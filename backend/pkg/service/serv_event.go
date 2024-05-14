@@ -16,3 +16,7 @@ func NewEventService(repo repository.Event) *EventService {
 func (s *EventService) Create(userId int, event augventure.Event) (int, error) {
 	return s.repo.Create(userId, event)
 }
+
+func (s *EventService) GetAll(userId int) ([]augventure.Event, error) {
+	return s.repo.GetAll(userId)
+}

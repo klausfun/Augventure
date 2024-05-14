@@ -29,7 +29,25 @@ func (h *Handler) createEvents(c *gin.Context) {
 	})
 }
 
+type getAllEventsResponse struct {
+	Data []augventure.Event `json:"data"`
+}
+
 func (h *Handler) getAllEvents(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		return
+	}
+
+	events, err := h.services.Event.GetAll(userId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, getAllEventsResponse{
+		Data: events,
+	})
 
 }
 

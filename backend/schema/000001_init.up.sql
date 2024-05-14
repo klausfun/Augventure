@@ -25,9 +25,9 @@ CREATE TABLE events
     id            serial                                                          not null unique,
     title         varchar(255)                                                    not null,
     description   text                                                            not null default '',
-    picture_url   varchar(255),
-    start_date         timestamp                                                       not null default NOW(),
-    author_id     int references users (id) on delete restrict on update restrict NOT NULL,
+    picture_url   varchar(255)                                                             default '',
+    start_date    timestamp                                                       not null default NOW(),
+    author_id     int references users (id) on delete restrict on update restrict not null,
     state_id      int references event_states (id)                                not null default 1,
     creation_date timestamp                                                       not null default NOW()
 );
