@@ -22,14 +22,14 @@ VALUES ('scheduled'),
 
 CREATE TABLE events
 (
-    id            serial                                                                 not null unique,
-    title         varchar(255)                                                           not null,
-    description   text                                                                   not null default '',
+    id            serial                                                          not null unique,
+    title         varchar(255)                                                    not null,
+    description   text                                                            not null default '',
     picture_url   varchar(255),
-    start         timestamp                                                              not null default NOW(),
-    author_id     int references users (id) on delete restrict on update restrict        NOT NULL,
-    state_id      int references event_states (id) on delete restrict on update restrict not null,
-    creation_date timestamp                                                              not null default NOW()
+    start_date         timestamp                                                       not null default NOW(),
+    author_id     int references users (id) on delete restrict on update restrict NOT NULL,
+    state_id      int references event_states (id)                                not null default 1,
+    creation_date timestamp                                                       not null default NOW()
 );
 
 CREATE TABLE suggestions
@@ -55,9 +55,9 @@ VALUES ('voting'),
 
 CREATE TABLE sprints
 (
-    id                   serial                                                                  not null unique,
-    state_id             int references sprint_states (id) on delete restrict on update restrict not null,
+    id                   serial                                                         not null unique,
+    state_id             int references sprint_states (id)                              not null,
     suggestion_winner_id int references suggestions (id) on delete restrict on update restrict unique,
-    event_id             int references events (id) on delete cascade on update cascade          not null,
+    event_id             int references events (id) on delete cascade on update cascade not null,
     start                timestamp default NOW()
 );

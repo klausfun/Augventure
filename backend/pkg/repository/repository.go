@@ -11,6 +11,7 @@ type Authorization interface {
 }
 
 type Event interface {
+	Create(userId int, event augventure.Event) (int, error)
 }
 
 type Sprint interface {
@@ -29,5 +30,6 @@ type Repository struct {
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		Authorization: NewAuthPostgres(db),
+		Event:         NewEventPostgres(db),
 	}
 }

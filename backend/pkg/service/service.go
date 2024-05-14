@@ -12,6 +12,7 @@ type Authorization interface {
 }
 
 type Event interface {
+	Create(userId int, event augventure.Event) (int, error)
 }
 
 type Sprint interface {
@@ -30,5 +31,6 @@ type Service struct {
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos.Authorization),
+		Event:         NewEventService(repos.Event),
 	}
 }
