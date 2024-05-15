@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	augventure "github.com/klausfun/Augventure"
@@ -40,4 +41,18 @@ func (r *EventPostgres) GetById(eventId int) (augventure.Event, error) {
 	err := r.db.Get(&event, query, eventId)
 
 	return event, err
+}
+
+func (r *EventPostgres) Delete(userId, eventId int) error {
+	var id = -1
+	query := fmt.Sprintf("DELETE FROM %s WHERE id = $1 AND author_id = $2 RETURNING id", eventsTable)
+	row := r.db.QueryRow(query, eventId, userId)
+	if err := row.Scan(&id); err != nil {
+		return err
+	}
+	if id == -1 {
+		errors.New("there is no event with this id or you do not have the authority to delete it")
+	}
+
+	return nil
 }

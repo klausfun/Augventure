@@ -15,6 +15,7 @@ type Event interface {
 	Create(userId int, event augventure.Event) (int, error)
 	GetAll() ([]augventure.Event, error)
 	GetById(eventId int) (augventure.Event, error)
+	Delete(userId, eventId int) error
 }
 
 type Sprint interface {
