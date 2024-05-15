@@ -13,7 +13,8 @@ type Authorization interface {
 
 type Event interface {
 	Create(userId int, event augventure.Event) (int, error)
-	GetAll(userId int) ([]augventure.Event, error)
+	GetAll() ([]augventure.Event, error)
+	GetById(eventId int) (augventure.Event, error)
 }
 
 type Sprint interface {

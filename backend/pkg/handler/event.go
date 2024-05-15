@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	augventure "github.com/klausfun/Augventure"
 	"net/http"
+	"strconv"
 )
 
 func (h *Handler) createEvents(c *gin.Context) {
@@ -34,12 +35,7 @@ type getAllEventsResponse struct {
 }
 
 func (h *Handler) getAllEvents(c *gin.Context) {
-	userId, err := getUserId(c)
-	if err != nil {
-		return
-	}
-
-	events, err := h.services.Event.GetAll(userId)
+	events, err := h.services.Event.GetAll()
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -48,11 +44,22 @@ func (h *Handler) getAllEvents(c *gin.Context) {
 	c.JSON(http.StatusOK, getAllEventsResponse{
 		Data: events,
 	})
-
 }
 
 func (h *Handler) getEventById(c *gin.Context) {
+	eventId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid is param")
+		return
+	}
 
+	event, err := h.services.Event.GetById(eventId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, event)
 }
 
 func (h *Handler) updateEvent(c *gin.Context) {
