@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	augventure "github.com/klausfun/Augventure"
+	"github.com/sirupsen/logrus"
+	"strings"
 )
 
 type EventPostgres struct {
@@ -47,6 +49,44 @@ func (r *EventPostgres) Delete(userId, eventId int) error {
 	var id = -1
 	query := fmt.Sprintf("DELETE FROM %s WHERE id = $1 AND author_id = $2 RETURNING id", eventsTable)
 	row := r.db.QueryRow(query, eventId, userId)
+	if err := row.Scan(&id); err != nil {
+		return err
+	}
+	if id == -1 {
+		errors.New("there is no event with this id or you do not have the authority to delete it")
+	}
+
+	return nil
+}
+
+func (r *EventPostgres) Update(userId, eventId int, input augventure.UpdateEventInput) error {
+	setValues := make([]string, 0)
+	args := make([]interface{}, 0)
+	argId := 1
+
+	if input.Title != nil {
+		setValues = append(setValues, fmt.Sprintf("title=$%d", argId))
+		args = append(args, *input.Title)
+		argId++
+	}
+
+	if input.Description != nil {
+		setValues = append(setValues, fmt.Sprintf("description=$%d", argId))
+		args = append(args, *input.Description)
+		argId++
+	}
+
+	setQuery := strings.Join(setValues, ", ")
+
+	query := fmt.Sprintf("UPDATE %s SET %s WHERE id = $%d AND author_id = $%d RETURNING id",
+		eventsTable, setQuery, argId, argId+1)
+	args = append(args, eventId, userId)
+	fmt.Println(args)
+	logrus.Debugf("updateQuery: %s", query)
+	logrus.Debugf("args: %s", args)
+
+	var id = -1
+	row := r.db.QueryRow(query, args...)
 	if err := row.Scan(&id); err != nil {
 		return err
 	}

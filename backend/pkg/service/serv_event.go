@@ -28,3 +28,7 @@ func (s *EventService) GetById(eventId int) (augventure.Event, error) {
 func (s *EventService) Delete(userId, eventId int) error {
 	return s.repo.Delete(userId, eventId)
 }
+
+func (s *EventService) Update(userId, eventId int, input augventure.UpdateEventInput) error {
+	return s.repo.Update(userId, eventId, input)
+}

@@ -1,5 +1,7 @@
 package augventure
 
+import "errors"
+
 type Event struct {
 	Id           int    `json:"id" db:"id"`
 	Title        string `json:"title" db:"title" binding:"required"`
@@ -27,4 +29,17 @@ type Suggestion struct {
 	Id          int    `json:"id"`
 	SprintId    int    `json:"sprint_id"`
 	TextContent string `json:"text_content"`
+}
+
+type UpdateEventInput struct {
+	Title       *string `json:"title"`
+	Description *string `json:"description"`
+}
+
+func (i UpdateEventInput) Validate() error {
+	if i.Title == nil && i.Description == nil {
+		return errors.New("update structure has no values")
+	}
+
+	return nil
 }
