@@ -20,6 +20,7 @@ type Event interface {
 }
 
 type Sprint interface {
+	Create(eventId int, sprint augventure.Sprint) (int, error)
 }
 
 type Profile interface {
@@ -36,5 +37,6 @@ func NewService(repos *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos.Authorization),
 		Event:         NewEventService(repos.Event),
+		Sprint:        NewSprintService(repos.Sprint),
 	}
 }

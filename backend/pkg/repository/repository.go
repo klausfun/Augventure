@@ -19,6 +19,7 @@ type Event interface {
 }
 
 type Sprint interface {
+	Create(eventId int, sprint augventure.Sprint) (int, error)
 }
 
 type Profile interface {
@@ -35,5 +36,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		Authorization: NewAuthPostgres(db),
 		Event:         NewEventPostgres(db),
+		Sprint:        NewSprintPostgres(db),
 	}
 }

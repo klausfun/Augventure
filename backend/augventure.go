@@ -20,15 +20,23 @@ const (
 )
 
 type Sprint struct {
-	Id      int    `json:"id"`
-	EventId int    `json:"event_id"`
-	State   string `json:"state"`
+	Id      int `json:"id"`
+	EventId int `json:"event_id" binding:"required"`
 }
 
 type Suggestion struct {
 	Id          int    `json:"id"`
 	SprintId    int    `json:"sprint_id"`
 	TextContent string `json:"text_content"`
+}
+
+type FinishVoting struct {
+	SuggestionWinnerId int `json:"suggestion_winner_id"`
+}
+
+type FinishImplementing struct {
+	TextContent  string `json:"text_content"`
+	IsLastSprint bool   `json:"is_last_sprint"`
 }
 
 type UpdateEventInput struct {

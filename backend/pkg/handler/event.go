@@ -19,14 +19,21 @@ func (h *Handler) createEvents(c *gin.Context) {
 		return
 	}
 
-	id, err := h.services.Event.Create(userId, input)
+	eventId, err := h.services.Event.Create(userId, input)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	sprintId, err := h.services.Sprint.Create(eventId, augventure.Sprint{})
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	c.JSON(http.StatusOK, map[string]interface{}{
-		"id": id,
+		"eventId":  eventId,
+		"sprintId": sprintId,
 	})
 }
 
@@ -111,9 +118,7 @@ func (h *Handler) deleteEvent(c *gin.Context) {
 	})
 }
 
-func (h *Handler) finishVoting(c *gin.Context) {
-
-}
+func (h *Handler) finishVoting(c *gin.Context) {}
 
 func (h *Handler) finishImplementing(c *gin.Context) {
 
