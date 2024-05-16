@@ -20,7 +20,7 @@ type Event interface {
 }
 
 type Sprint interface {
-	Create(eventId int, sprint augventure.Sprint) (int, error)
+	Create(eventId int) (int, error)
 }
 
 type Profile interface {

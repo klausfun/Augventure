@@ -1,7 +1,6 @@
 package service
 
 import (
-	augventure "github.com/klausfun/Augventure"
 	"github.com/klausfun/Augventure/pkg/repository"
 )
 
@@ -13,6 +12,6 @@ func NewSprintService(repo repository.Sprint) *SprintService {
 	return &SprintService{repo: repo}
 }
 
-func (s *SprintService) Create(eventId int, sprint augventure.Sprint) (int, error) {
-	return s.repo.Create(eventId, sprint)
+func (s *SprintService) Create(eventId int) (int, error) {
+	return s.repo.Create(eventId)
 }

@@ -24,12 +24,7 @@ func (h *Handler) createEvents(c *gin.Context) {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-
-	sprintId, err := h.services.Sprint.Create(eventId, augventure.Sprint{})
-	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
-		return
-	}
+	sprintId := h.createSprints(c, eventId)
 
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"eventId":  eventId,

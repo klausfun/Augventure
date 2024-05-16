@@ -42,15 +42,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			events.PATCH("/:id/finish_implementing", h.finishImplementing)
 		}
 
-		sprints := api.Group("/sprints")
-		{
-			sprints.POST("/", h.createSprints)
-			sprints.DELETE("/:id", h.deleteSprint)
-			sprints.GET("/", h.getAllSprints)
-			sprints.GET("/:id", h.getSprintById)
-			sprints.PUT("/:id", h.updateSprint)
-		}
-
 		suggestions := api.Group("/suggestions")
 		{
 			suggestions.POST("/", h.createSuggestions)
