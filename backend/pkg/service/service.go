@@ -2,6 +2,7 @@ package service
 
 import (
 	augventure "github.com/klausfun/Augventure"
+	"github.com/klausfun/Augventure/pkg/infrastructure"
 	"github.com/klausfun/Augventure/pkg/repository"
 )
 
@@ -39,11 +40,11 @@ type Service struct {
 	Suggestion
 }
 
-func NewService(repos *repository.Repository) *Service {
+func NewService(repos *repository.Repository, storage *infrastructure.S3Storage) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos.Authorization),
 		Event:         NewEventService(repos.Event),
 		Sprint:        NewSprintService(repos.Sprint),
-		Suggestion:    NewSuggestionService(repos.Suggestion),
+		Suggestion:    NewSuggestionService(repos.Suggestion, storage),
 	}
 }

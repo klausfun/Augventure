@@ -4,6 +4,7 @@ import (
 	"github.com/joho/godotenv"
 	augventure "github.com/klausfun/Augventure"
 	"github.com/klausfun/Augventure/pkg/handler"
+	"github.com/klausfun/Augventure/pkg/infrastructure"
 	"github.com/klausfun/Augventure/pkg/repository"
 	"github.com/klausfun/Augventure/pkg/service"
 	_ "github.com/lib/pq"
@@ -35,8 +36,20 @@ func main() {
 		logrus.Fatalf("failed to initialize db: %s", err.Error())
 	}
 
+	// Инициализация Yandex Object Storage
+	cloudStorage, err := infrastructure.NewS3Storage(
+		viper.GetString("s3.bucketName"),
+		viper.GetString("s3.region"),
+		viper.GetString("s3.endpoint"),
+		os.Getenv("S3_ACCESS_KEY"),
+		os.Getenv("S3_SECRET_KEY"),
+	)
+	if err != nil {
+		logrus.Fatalf("failed to initialize cloud storage: %s", err.Error())
+	}
+
 	repos := repository.NewRepository(db)
-	services := service.NewService(repos)
+	services := service.NewService(repos, cloudStorage)
 	handlers := handler.NewHandler(services)
 
 	srv := new(augventure.Server)
