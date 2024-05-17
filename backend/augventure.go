@@ -25,9 +25,9 @@ type Sprint struct {
 }
 
 type Suggestion struct {
-	Id          int    `json:"id"`
-	SprintId    int    `json:"sprint_id"`
-	TextContent string `json:"text_content"`
+	Id          int    `json:"id" db:"id"`
+	SprintId    int    `json:"sprint_id" binding:"required"`
+	TextContent string `json:"text_content" binding:"required"`
 }
 
 type UpdateSprintInput struct {

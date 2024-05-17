@@ -25,7 +25,10 @@ type Sprint interface {
 	Update(input augventure.UpdateSprintInput) error
 }
 
-type Profile interface {
+type Profile interface{}
+
+type Suggestion interface {
+	Create(userId int, suggestion augventure.Suggestion) (int, error)
 }
 
 type Service struct {
@@ -33,6 +36,7 @@ type Service struct {
 	Event
 	Sprint
 	Profile
+	Suggestion
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -40,5 +44,6 @@ func NewService(repos *repository.Repository) *Service {
 		Authorization: NewAuthService(repos.Authorization),
 		Event:         NewEventService(repos.Event),
 		Sprint:        NewSprintService(repos.Sprint),
+		Suggestion:    NewSuggestionService(repos.Suggestion),
 	}
 }

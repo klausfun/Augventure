@@ -27,11 +27,16 @@ type Sprint interface {
 type Profile interface {
 }
 
+type Suggestion interface {
+	Create(userId int, suggestion augventure.Suggestion) (int, error)
+}
+
 type Repository struct {
 	Authorization
 	Event
 	Sprint
 	Profile
+	Suggestion
 }
 
 func NewRepository(db *sqlx.DB) *Repository {
@@ -39,5 +44,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		Authorization: NewAuthPostgres(db),
 		Event:         NewEventPostgres(db),
 		Sprint:        NewSprintPostgres(db),
+		Suggestion:    NewSuggestionPostgres(db),
 	}
 }

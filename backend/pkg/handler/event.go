@@ -152,6 +152,4 @@ func (h *Handler) finishVoting(c *gin.Context) {
 	})
 }
 
-func (h *Handler) finishImplementing(c *gin.Context) {
-
-}
+func (h *Handler) finishImplementing(c *gin.Context) {}
