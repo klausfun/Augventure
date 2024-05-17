@@ -55,9 +55,9 @@ VALUES ('voting'),
 
 CREATE TABLE sprints
 (
-    id                   serial                                                         not null unique,
-    state_id             int references sprint_states (id)                              not null default 1,
-    suggestion_winner_id int references suggestions (id) on delete restrict on update restrict unique,
-    event_id             int references events (id) on delete cascade on update cascade not null,
-    start                timestamp default NOW()
+    id                   serial                                       not null unique,
+    state_id             int references sprint_states (id)            not null default 1,
+    suggestion_winner_id int                                                   default 0,
+    event_id             int references events (id) on delete cascade not null,
+    start                timestamp                                             default NOW()
 );

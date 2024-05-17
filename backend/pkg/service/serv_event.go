@@ -32,3 +32,7 @@ func (s *EventService) Delete(userId, eventId int) error {
 func (s *EventService) Update(userId, eventId int, input augventure.UpdateEventInput) error {
 	return s.repo.Update(userId, eventId, input)
 }
+
+func (s *EventService) FinishVoting(userId, eventId int) (int, error) {
+	return s.repo.FinishVoting(userId, eventId)
+}

@@ -3,6 +3,9 @@ package repository
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
+	augventure "github.com/klausfun/Augventure"
+	"github.com/sirupsen/logrus"
+	"strings"
 )
 
 type SprintPostgres struct {
@@ -23,4 +26,39 @@ func (r *SprintPostgres) Create(eventId int) (int, error) {
 	}
 
 	return id, nil
+}
+
+func (r *SprintPostgres) Update(input augventure.UpdateSprintInput) error {
+	setValues := make([]string, 0)
+	args := make([]interface{}, 0)
+	argId := 1
+
+	var stateId int
+	queryGetId := fmt.Sprintf("SELECT id FROM %s WHERE name=$1", sprintStatesTable)
+	err := r.db.Get(&stateId, queryGetId, input.Status)
+	if err != nil {
+		return err
+	}
+	setValues = append(setValues, fmt.Sprintf("state_id=$%d", argId))
+	args = append(args, stateId)
+	argId++
+
+	if input.SuggestionWinnerId != nil {
+		setValues = append(setValues, fmt.Sprintf("suggestion_winner_id=$%d", argId))
+		args = append(args, *input.SuggestionWinnerId)
+		argId++
+	}
+
+	setQuery := strings.Join(setValues, ", ")
+
+	query := fmt.Sprintf("UPDATE %s SET %s WHERE id = $%d AND suggestion_winner_id=0",
+		sprintsTable, setQuery, argId)
+	args = append(args, input.SprintId)
+
+	logrus.Debugf("updateQuery: %s", query)
+	logrus.Debugf("args: %s", args)
+
+	_, err = r.db.Exec(query, args...)
+
+	return err
 }

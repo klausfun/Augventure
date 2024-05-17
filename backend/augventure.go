@@ -30,8 +30,10 @@ type Suggestion struct {
 	TextContent string `json:"text_content"`
 }
 
-type FinishVoting struct {
-	SuggestionWinnerId int `json:"suggestion_winner_id"`
+type UpdateSprintInput struct {
+	SprintId           int    `json:"sprint_id"`
+	SuggestionWinnerId *int   `json:"suggestion_winner_id"`
+	Status             string `json:"status"`
 }
 
 type FinishImplementing struct {

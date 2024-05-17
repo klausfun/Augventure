@@ -17,10 +17,12 @@ type Event interface {
 	GetById(eventId int) (augventure.Event, error)
 	Delete(userId, eventId int) error
 	Update(userId, eventId int, input augventure.UpdateEventInput) error
+	FinishVoting(userId, eventId int) (int, error)
 }
 
 type Sprint interface {
 	Create(eventId int) (int, error)
+	Update(input augventure.UpdateSprintInput) error
 }
 
 type Profile interface {

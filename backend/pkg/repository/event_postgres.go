@@ -81,7 +81,7 @@ func (r *EventPostgres) Update(userId, eventId int, input augventure.UpdateEvent
 	query := fmt.Sprintf("UPDATE %s SET %s WHERE id = $%d AND author_id = $%d RETURNING id",
 		eventsTable, setQuery, argId, argId+1)
 	args = append(args, eventId, userId)
-	fmt.Println(args)
+
 	logrus.Debugf("updateQuery: %s", query)
 	logrus.Debugf("args: %s", args)
 
@@ -95,4 +95,16 @@ func (r *EventPostgres) Update(userId, eventId int, input augventure.UpdateEvent
 	}
 
 	return nil
+}
+
+func (r *EventPostgres) FinishVoting(userId, eventId int) (int, error) {
+	var id int
+	query := fmt.Sprintf("SELECT spr.id FROM %s spr"+
+		" INNER JOIN %s ev on spr.event_id = ev.id"+
+		" INNER JOIN %s us on us.id = ev.author_id "+
+		" WHERE ev.id = $1 AND us.id = $2"+
+		" ORDER BY spr.id DESC LIMIT 1", sprintsTable, eventsTable, userTable)
+	err := r.db.Get(&id, query, eventId, userId)
+
+	return id, err
 }

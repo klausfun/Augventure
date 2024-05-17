@@ -113,7 +113,44 @@ func (h *Handler) deleteEvent(c *gin.Context) {
 	})
 }
 
-func (h *Handler) finishVoting(c *gin.Context) {}
+func (h *Handler) finishVoting(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		return
+	}
+
+	eventId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "invalid is param")
+		return
+	}
+
+	var input augventure.UpdateSprintInput
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	sprintId, err := h.services.Event.FinishVoting(userId, eventId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	finishVotingInput := augventure.UpdateSprintInput{
+		SprintId:           sprintId,
+		SuggestionWinnerId: input.SuggestionWinnerId,
+		Status:             implementingState,
+	}
+	if err := h.updateSprint(c, finishVotingInput); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "ok",
+	})
+}
 
 func (h *Handler) finishImplementing(c *gin.Context) {
 
