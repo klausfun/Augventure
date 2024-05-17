@@ -36,6 +36,10 @@ type UpdateSprintInput struct {
 	Status             string `json:"status"`
 }
 
+type FinishVoting struct {
+	SuggestionWinnerId *int `json:"suggestion_winner_id"`
+}
+
 type FinishImplementing struct {
 	TextContent  string `json:"text_content"`
 	IsLastSprint bool   `json:"is_last_sprint"`

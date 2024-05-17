@@ -125,7 +125,7 @@ func (h *Handler) finishVoting(c *gin.Context) {
 		return
 	}
 
-	var input augventure.UpdateSprintInput
+	var input augventure.FinishVoting
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
