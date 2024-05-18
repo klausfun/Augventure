@@ -18,13 +18,30 @@ func NewSuggestionService(repo repository.Suggestion, storage *infrastructure.S3
 }
 
 func (s *SuggestionService) Create(userId int, suggestion augventure.Suggestion) (int, error) {
-	// todo нужно генерировать уникальные ссылки!!!
 	url, err := s.storage.SaveFile([]byte(suggestion.TextContent),
-		fmt.Sprintf("sprintId=%d, userId=%d", suggestion.SprintId, userId))
+		fmt.Sprintf("Id=%d", repository.LastId))
 	if err != nil {
 		return 0, errors.New("error writing to the cloud: " + err.Error())
 	}
 	suggestion.TextContent = url
 
 	return s.repo.Create(userId, suggestion)
+}
+
+func (s *SuggestionService) GetBySprintId(sprintId int) ([]augventure.FilterSuggestions, error) {
+	filterSuggestions, err := s.repo.GetBySprintId(sprintId)
+	if err != nil {
+		return nil, err
+	}
+
+	for i, curSuggestion := range filterSuggestions {
+		content, err := s.storage.GetFile(fmt.Sprintf("%s", curSuggestion.Content[43:]))
+		if err != nil {
+			return nil, errors.New("error receiving a file from the cloud: " + err.Error())
+		}
+
+		filterSuggestions[i].Content = string(content)
+	}
+
+	return filterSuggestions, nil
 }

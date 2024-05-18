@@ -46,7 +46,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			suggestions.POST("/", h.createSuggestions)
 			suggestions.DELETE("/:id", h.deleteSuggestions)
-			suggestions.GET("/", h.getSuggestionsBySprintId)
+			suggestions.POST("/get", h.getSuggestionsBySprintId)
 			suggestions.PUT("/:id/vote", h.voteSuggestions)
 			//suggestions.PUT("/:id/add_media", h.addMedia)
 		}

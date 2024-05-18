@@ -29,6 +29,7 @@ type Profile interface {
 
 type Suggestion interface {
 	Create(userId int, suggestion augventure.Suggestion) (int, error)
+	GetBySprintId(sprintId int) ([]augventure.FilterSuggestions, error)
 }
 
 type Repository struct {

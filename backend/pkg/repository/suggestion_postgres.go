@@ -28,12 +28,37 @@ func (r *SuggestionPostgres) Create(userId int, suggestion augventure.Suggestion
 	}
 
 	var id int
-	createEventQuery := fmt.Sprintf("INSERT INTO %s (link_to_the_text, sprint_id, author_id)"+
+	createSuggestionQuery := fmt.Sprintf("INSERT INTO %s (link_to_the_text, sprint_id, author_id)"+
 		"VALUES ($1, $2, $3) RETURNING id", suggestionsTable)
-	row := r.db.QueryRow(createEventQuery, suggestion.TextContent, suggestion.SprintId, userId)
+	row := r.db.QueryRow(createSuggestionQuery, suggestion.TextContent, suggestion.SprintId, userId)
 	if err := row.Scan(&id); err != nil {
 		return 0, err
 	}
 
+	LastId = id
 	return id, nil
+}
+
+func (r *SuggestionPostgres) GetBySprintId(sprintId int) ([]augventure.FilterSuggestions, error) {
+	var suggestions []augventure.FilterSuggestions
+
+	query := fmt.Sprintf("SELECT * FROM %s WHERE sprint_id = $1", suggestionsTable)
+	err := r.db.Select(&suggestions, query, sprintId)
+	if err != nil {
+		return nil, err
+	}
+
+	for i, curSuggestion := range suggestions {
+		var author augventure.AuthorSuggestion
+
+		queryAuthor := fmt.Sprintf("SELECT id, name, username, email, bio, pfp_url FROM %s WHERE id = $1", userTable)
+		err := r.db.Get(&author, queryAuthor, curSuggestion.AuthorId)
+		if err != nil {
+			return nil, err
+		}
+
+		suggestions[i].Author = author
+	}
+
+	return suggestions, err
 }

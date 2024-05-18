@@ -5,6 +5,8 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+var LastId = 1
+
 const (
 	sprintsTable      = "sprints"
 	eventsTable       = "events"
