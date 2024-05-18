@@ -43,16 +43,20 @@ func (r *SprintPostgres) Update(input augventure.UpdateSprintInput) error {
 	args = append(args, stateId)
 	argId++
 
+	var query string
 	if input.SuggestionWinnerId != nil {
 		setValues = append(setValues, fmt.Sprintf("suggestion_winner_id=$%d", argId))
 		args = append(args, *input.SuggestionWinnerId)
 		argId++
+
+		setQuery := strings.Join(setValues, ", ")
+		query = fmt.Sprintf("UPDATE %s SET %s WHERE id = $%d AND suggestion_winner_id=0",
+			sprintsTable, setQuery, argId)
+	} else {
+		setQuery := strings.Join(setValues, ", ")
+		query = fmt.Sprintf("UPDATE %s SET %s WHERE id = $%d",
+			sprintsTable, setQuery, argId)
 	}
-
-	setQuery := strings.Join(setValues, ", ")
-
-	query := fmt.Sprintf("UPDATE %s SET %s WHERE id = $%d AND suggestion_winner_id=0",
-		sprintsTable, setQuery, argId)
 	args = append(args, input.SprintId)
 
 	logrus.Debugf("updateQuery: %s", query)
