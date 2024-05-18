@@ -109,16 +109,27 @@ func (r *EventPostgres) Update(userId, eventId int, input augventure.UpdateEvent
 	return nil
 }
 
-func (r *EventPostgres) FinishVoting(userId, eventId int) (int, error) {
-	var id int
-	query := fmt.Sprintf("SELECT spr.id FROM %s spr"+
+func (r *EventPostgres) FinishVoting(userId, eventId, suggestionWinnerId int) (int, error) {
+	var sprintId, suggestionId int
+	queryGetSprintId := fmt.Sprintf("SELECT spr.id FROM %s spr"+
 		" INNER JOIN %s ev on spr.event_id = ev.id"+
 		" INNER JOIN %s us on us.id = ev.author_id "+
 		" WHERE ev.id = $1 AND us.id = $2"+
 		" ORDER BY spr.id DESC LIMIT 1", sprintsTable, eventsTable, userTable)
-	err := r.db.Get(&id, query, eventId, userId)
+	err := r.db.Get(&sprintId, queryGetSprintId, eventId, userId)
+	if err != nil {
+		return 0, errors.New(fmt.Sprintf("this user does not have the necessary rights or"+
+			" there are no sprints in this event: %v", err))
+	}
+	queryGetSuggestionId := fmt.Sprintf("SELECT sug.id FROM %s sug"+
+		" INNER JOIN %s spr on spr.id = sug.sprint_id"+
+		" WHERE spr.id = $1 AND sug.id = $2", suggestionsTable, sprintsTable)
+	err = r.db.Get(&suggestionId, queryGetSuggestionId, sprintId, suggestionWinnerId)
+	if err != nil {
+		return 0, errors.New(fmt.Sprintf("there are no 'suggestion' with this id in this sprint: %v", err))
+	}
 
-	return id, err
+	return sprintId, nil
 }
 
 func (r *EventPostgres) FinishImplementing(userId, eventId int) (int, error) {

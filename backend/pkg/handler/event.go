@@ -149,7 +149,7 @@ func (h *Handler) finishVoting(c *gin.Context) {
 		return
 	}
 
-	sprintId, err := h.services.Event.FinishVoting(userId, eventId)
+	sprintId, err := h.services.Event.FinishVoting(userId, eventId, *input.SuggestionWinnerId)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

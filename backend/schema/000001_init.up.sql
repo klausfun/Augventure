@@ -37,7 +37,7 @@ CREATE TABLE suggestions
     id               serial                                                          not null unique,
     author_id        int references users (id) on delete restrict on update restrict not null,
     post_date        timestamp                                                       not null default now(),
-    sprint_id        int                                                             not null,
+    sprint_id        int references sprints (id) on delete restrict on update restrict       not null,
     votes            int                                                             not null default 0,
     link_to_the_text varchar(255)                                                    not null
 );

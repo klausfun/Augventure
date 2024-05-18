@@ -16,7 +16,7 @@ type Event interface {
 	GetById(eventId int) (augventure.Event, error)
 	Delete(userId, eventId int) error
 	Update(userId, eventId int, input augventure.UpdateEventInput) error
-	FinishVoting(userId, eventId int) (int, error)
+	FinishVoting(userId, eventId, suggestionWinnerId int) (int, error)
 	FinishImplementing(userId, eventId int) (int, error)
 }
 
