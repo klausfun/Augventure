@@ -36,3 +36,7 @@ func (s *EventService) Update(userId, eventId int, input augventure.UpdateEventI
 func (s *EventService) FinishVoting(userId, eventId int) (int, error) {
 	return s.repo.FinishVoting(userId, eventId)
 }
+
+func (s *EventService) FinishImplementing(userId, eventId int) (int, error) {
+	return s.repo.FinishImplementing(userId, eventId)
+}

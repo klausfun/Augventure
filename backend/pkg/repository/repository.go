@@ -17,6 +17,7 @@ type Event interface {
 	Delete(userId, eventId int) error
 	Update(userId, eventId int, input augventure.UpdateEventInput) error
 	FinishVoting(userId, eventId int) (int, error)
+	FinishImplementing(userId, eventId int) (int, error)
 }
 
 type Sprint interface {

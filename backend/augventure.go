@@ -64,6 +64,7 @@ type FinishImplementing struct {
 type UpdateEventInput struct {
 	Title       *string `json:"title"`
 	Description *string `json:"description"`
+	Status      string  `json:"status"`
 }
 
 func (i UpdateEventInput) Validate() error {

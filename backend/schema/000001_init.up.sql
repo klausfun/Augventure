@@ -28,7 +28,7 @@ CREATE TABLE events
     picture_url   varchar(255)                                                             default '',
     start_date    timestamp                                                       not null default NOW(),
     author_id     int references users (id) on delete restrict on update restrict not null,
-    state_id      int references event_states (id)                                not null default 1,
+    state_id      int references event_states (id)                                not null default 2,
     creation_date timestamp                                                       not null default NOW()
 );
 
@@ -59,5 +59,6 @@ CREATE TABLE sprints
     state_id             int references sprint_states (id)            not null default 1,
     suggestion_winner_id int                                                   default 0,
     event_id             int references events (id) on delete cascade not null,
-    start                timestamp                                             default NOW()
+    start                timestamp                                             default NOW(),
+    winner_description   varchar(255)                                          default ''
 );

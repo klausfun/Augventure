@@ -64,6 +64,18 @@ func (r *EventPostgres) Update(userId, eventId int, input augventure.UpdateEvent
 	args := make([]interface{}, 0)
 	argId := 1
 
+	if input.Status != "" {
+		var stateId int
+		queryGetId := fmt.Sprintf("SELECT id FROM %s WHERE name=$1", eventStatesTable)
+		err := r.db.Get(&stateId, queryGetId, input.Status)
+		if err != nil {
+			return err
+		}
+		setValues = append(setValues, fmt.Sprintf("state_id=$%d", argId))
+		args = append(args, stateId)
+		argId++
+	}
+
 	if input.Title != nil {
 		setValues = append(setValues, fmt.Sprintf("title=$%d", argId))
 		args = append(args, *input.Title)
@@ -103,6 +115,18 @@ func (r *EventPostgres) FinishVoting(userId, eventId int) (int, error) {
 		" INNER JOIN %s ev on spr.event_id = ev.id"+
 		" INNER JOIN %s us on us.id = ev.author_id "+
 		" WHERE ev.id = $1 AND us.id = $2"+
+		" ORDER BY spr.id DESC LIMIT 1", sprintsTable, eventsTable, userTable)
+	err := r.db.Get(&id, query, eventId, userId)
+
+	return id, err
+}
+
+func (r *EventPostgres) FinishImplementing(userId, eventId int) (int, error) {
+	var id int
+	query := fmt.Sprintf("SELECT spr.id FROM %s spr"+
+		" INNER JOIN %s ev on spr.event_id = ev.id"+
+		" INNER JOIN %s us on us.id = ev.author_id "+
+		" WHERE ev.id = $1 AND us.id = $2 AND spr.state_id = 2"+
 		" ORDER BY spr.id DESC LIMIT 1", sprintsTable, eventsTable, userTable)
 	err := r.db.Get(&id, query, eventId, userId)
 
