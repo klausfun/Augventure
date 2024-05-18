@@ -40,3 +40,7 @@ func (s *EventService) FinishVoting(userId, eventId, suggestionWinnerId int) (in
 func (s *EventService) FinishImplementing(userId, eventId int) (int, error) {
 	return s.repo.FinishImplementing(userId, eventId)
 }
+
+func (s *EventService) CheckingTheStatus(eventId int) (bool, error) {
+	return s.repo.CheckingTheStatus(eventId)
+}

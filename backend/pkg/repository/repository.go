@@ -18,6 +18,7 @@ type Event interface {
 	Update(userId, eventId int, input augventure.UpdateEventInput) error
 	FinishVoting(userId, eventId, suggestionWinnerId int) (int, error)
 	FinishImplementing(userId, eventId int) (int, error)
+	CheckingTheStatus(eventId int) (bool, error)
 }
 
 type Sprint interface {

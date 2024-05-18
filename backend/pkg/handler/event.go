@@ -93,6 +93,15 @@ func (h *Handler) updateEvent(c *gin.Context) {
 		return
 	}
 
+	resp, err := h.services.Event.CheckingTheStatus(eventId)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	} else if !resp {
+		newErrorResponse(c, http.StatusBadRequest, "The event status is not 'in_progress'")
+		return
+	}
+
 	var input augventure.UpdateEventInput
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
@@ -143,6 +152,15 @@ func (h *Handler) finishVoting(c *gin.Context) {
 		return
 	}
 
+	resp, err := h.services.Event.CheckingTheStatus(eventId)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	} else if !resp {
+		newErrorResponse(c, http.StatusBadRequest, "The event status is not 'in_progress'")
+		return
+	}
+
 	var input augventure.FinishVoting
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
@@ -179,6 +197,15 @@ func (h *Handler) finishImplementing(c *gin.Context) {
 	eventId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "invalid is param")
+		return
+	}
+
+	resp, err := h.services.Event.CheckingTheStatus(eventId)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	} else if !resp {
+		newErrorResponse(c, http.StatusBadRequest, "The event status is not 'in_progress'")
 		return
 	}
 

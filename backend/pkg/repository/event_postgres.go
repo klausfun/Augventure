@@ -143,3 +143,14 @@ func (r *EventPostgres) FinishImplementing(userId, eventId int) (int, error) {
 
 	return id, err
 }
+
+func (r *EventPostgres) CheckingTheStatus(eventId int) (bool, error) {
+	var statusId int
+	query := fmt.Sprintf("SELECT state_id FROM %s WHERE id = $1", eventsTable)
+	err := r.db.Get(&statusId, query, eventId)
+	if statusId != 2 {
+		return false, err
+	}
+
+	return true, err
+}
