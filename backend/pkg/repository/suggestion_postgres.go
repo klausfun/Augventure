@@ -62,3 +62,69 @@ func (r *SuggestionPostgres) GetBySprintId(sprintId int) ([]augventure.FilterSug
 
 	return suggestions, err
 }
+
+func (r *SuggestionPostgres) Vote(voteType bool, suggestionId, userId int) error {
+	count := 0
+	if voteType {
+		count = 1
+	} else {
+		count = -1
+	}
+
+	var voteId int
+	queryGetVoteId := fmt.Sprintf("SELECT id FROM %s WHERE suggestion_id = $1 AND user_id = $2", votesTable)
+	err := r.db.Get(&voteId, queryGetVoteId, suggestionId, userId)
+
+	tx, err2 := r.db.Begin()
+	if err2 != nil {
+		return err2
+	}
+	if err != nil {
+		createVotesQuery := fmt.Sprintf("INSERT INTO %s (user_id, suggestion_id, vote_type)"+
+			" VALUES ($1, $2, $3)", votesTable)
+		_, err = tx.Exec(createVotesQuery, userId, suggestionId, voteType)
+		if err != nil {
+			fmt.Println(createVotesQuery)
+			tx.Rollback()
+			return err
+		}
+
+		query := fmt.Sprintf("UPDATE %s sug "+
+			"SET votes = sug.votes + $1 "+
+			"FROM %s vot "+
+			"INNER JOIN %s us ON us.id = vot.user_id "+
+			"WHERE vot.suggestion_id = sug.id AND sug.id = $2 AND us.id = $3 AND vot.vote_type = $4",
+			suggestionsTable, votesTable, userTable)
+		_, err = tx.Exec(query, count, suggestionId, userId, voteType)
+		if err != nil {
+			fmt.Println(query)
+			tx.Rollback()
+			return err
+		}
+	} else {
+		queryUpdateSuggestions := fmt.Sprintf("UPDATE %s sug SET votes = sug.votes + 2*$1"+
+			" FROM %s vot"+
+			" INNER JOIN %s us on us.id = vot.user_id"+
+			" WHERE vot.suggestion_id = sug.id AND sug.id = $2 AND us.id = $3 AND vot.vote_type = $4",
+			suggestionsTable, votesTable, userTable)
+		_, err = tx.Exec(queryUpdateSuggestions, count, suggestionId, userId, !voteType)
+		if err != nil {
+			fmt.Println(queryUpdateSuggestions)
+			tx.Rollback()
+			return err
+		}
+
+		queryUpdateVotes := fmt.Sprintf("UPDATE %s vot SET vote_type = NOT vot.vote_type"+
+			" FROM %s sug, %s us"+
+			" WHERE vot.suggestion_id = sug.id AND vot.user_id = us.id AND sug.id = $1 AND us.id = $2 AND vot.vote_type = $3",
+			votesTable, suggestionsTable, userTable)
+		_, err = tx.Exec(queryUpdateVotes, suggestionId, userId, !voteType)
+		if err != nil {
+			fmt.Println(queryUpdateVotes)
+			tx.Rollback()
+			return err
+		}
+	}
+
+	return tx.Commit()
+}

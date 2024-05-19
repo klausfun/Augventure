@@ -15,12 +15,6 @@ type Event struct {
 	CreationDate string `json:"creation_date" db:"creation_date"`
 }
 
-const (
-	Voting       = "voting"
-	Implementing = "implementing"
-	Ended        = "ended"
-)
-
 type Sprint struct {
 	Id      int `json:"id"`
 	EventId int `json:"event_id" binding:"required"`
@@ -44,6 +38,10 @@ type FilterSuggestions struct {
 	Content  string           `json:"content" db:"link_to_the_text"`
 	PostDate string           `json:"post_date" db:"post_date"` // time.Time
 	Votes    int              `json:"votes" db:"votes"`
+}
+
+type Vote struct {
+	VoteType bool `json:"this_is_a_like"`
 }
 
 type UpdateSprintInput struct {

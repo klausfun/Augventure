@@ -37,7 +37,7 @@ CREATE TABLE suggestions
     id               serial                                                          not null unique,
     author_id        int references users (id) on delete restrict on update restrict not null,
     post_date        timestamp                                                       not null default now(),
-    sprint_id        int references sprints (id) on delete restrict on update restrict       not null,
+    sprint_id        int                                                             not null,
     votes            int                                                             not null default 0,
     link_to_the_text varchar(255)                                                    not null
 );
@@ -61,4 +61,12 @@ CREATE TABLE sprints
     event_id             int references events (id) on delete cascade not null,
     start                timestamp                                             default NOW(),
     winner_description   varchar(255)                                          default ''
+);
+
+CREATE TABLE votes
+(
+    id            serial                                                              not null unique,
+    suggestion_id int references suggestions (id) on delete cascade on update cascade not null,
+    user_id       int references users (id) on delete cascade on update cascade       not null,
+    vote_type     bool
 );

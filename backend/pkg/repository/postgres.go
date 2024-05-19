@@ -14,6 +14,7 @@ const (
 	userTable         = "users"
 	eventStatesTable  = "event_states"
 	sprintStatesTable = "sprint_states"
+	votesTable        = "votes"
 )
 
 type Config struct {

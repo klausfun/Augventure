@@ -33,6 +33,7 @@ type Profile interface{}
 type Suggestion interface {
 	Create(userId int, suggestion augventure.Suggestion) (int, error)
 	GetBySprintId(sprintId int) ([]augventure.FilterSuggestions, error)
+	Vote(voteType bool, suggestionId, userId int) error
 }
 
 type Service struct {

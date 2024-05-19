@@ -1,3 +1,5 @@
+DROP TABLE votes;
+
 DROP TABLE sprints;
 
 DROP TABLE events;
