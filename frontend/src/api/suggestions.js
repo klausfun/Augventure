@@ -1,7 +1,7 @@
 export default function (instance) {
     return {
-        filterSuggestion(payload) {
-            return instance.get("suggestions?sort=-votes&filter=" + JSON.stringify(payload));
+        getSuggestion(payload) {
+            return instance.get("suggestions/get", payload);
         },
         createSuggestion(payload) {
             return instance.post("suggestions", payload);

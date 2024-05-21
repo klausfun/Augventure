@@ -63,7 +63,7 @@ func (r *SuggestionPostgres) GetBySprintId(sprintId int) ([]augventure.FilterSug
 	return suggestions, err
 }
 
-func (r *SuggestionPostgres) Vote(voteType bool, suggestionId, userId int) error {
+func (r *SuggestionPostgres) Vote(voteType bool, suggestionId, userId int) (int, error) {
 	count := 0
 	if voteType {
 		count = 1
@@ -77,7 +77,7 @@ func (r *SuggestionPostgres) Vote(voteType bool, suggestionId, userId int) error
 
 	tx, err2 := r.db.Begin()
 	if err2 != nil {
-		return err2
+		return 0, err2
 	}
 	if err != nil {
 		createVotesQuery := fmt.Sprintf("INSERT INTO %s (user_id, suggestion_id, vote_type)"+
@@ -86,7 +86,7 @@ func (r *SuggestionPostgres) Vote(voteType bool, suggestionId, userId int) error
 		if err != nil {
 			fmt.Println(createVotesQuery)
 			tx.Rollback()
-			return err
+			return 0, err
 		}
 
 		query := fmt.Sprintf("UPDATE %s sug "+
@@ -99,7 +99,7 @@ func (r *SuggestionPostgres) Vote(voteType bool, suggestionId, userId int) error
 		if err != nil {
 			fmt.Println(query)
 			tx.Rollback()
-			return err
+			return 0, err
 		}
 	} else {
 		queryUpdateSuggestions := fmt.Sprintf("UPDATE %s sug SET votes = sug.votes + 2*$1"+
@@ -111,7 +111,7 @@ func (r *SuggestionPostgres) Vote(voteType bool, suggestionId, userId int) error
 		if err != nil {
 			fmt.Println(queryUpdateSuggestions)
 			tx.Rollback()
-			return err
+			return 0, err
 		}
 
 		queryUpdateVotes := fmt.Sprintf("UPDATE %s vot SET vote_type = NOT vot.vote_type"+
@@ -122,9 +122,15 @@ func (r *SuggestionPostgres) Vote(voteType bool, suggestionId, userId int) error
 		if err != nil {
 			fmt.Println(queryUpdateVotes)
 			tx.Rollback()
-			return err
+			return 0, err
 		}
 	}
 
-	return tx.Commit()
+	tx.Commit()
+
+	var votes int
+	queryVotes := fmt.Sprintf("SELECT votes FROM %s WHERE id = $1", suggestionsTable)
+	err = r.db.Get(&votes, queryVotes, suggestionId)
+
+	return votes, err
 }

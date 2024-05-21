@@ -110,8 +110,11 @@ export default {
 
       try {
         const response = await this.$api.events.createEvent({
-          event: this.event,
-          initial_post: this.initial_post
+          // event: this.event,
+          // initial_post: this.initial_post
+          title: this.event.title,
+          description: this.event.description,
+          start_date: this.event.start_date
         })
         console.log('Событие успешно создано:', response.data)
         this.$router.push({ name: 'profile' })

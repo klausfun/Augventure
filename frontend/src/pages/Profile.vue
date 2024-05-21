@@ -37,12 +37,7 @@ export default {
   async beforeMount() {
     try {
       const events = await this.$api.events.filterEvents({
-        "filter": [ // or array
-          [ // and array
-            ["state", "in", ["in_progress", "scheduled"]],
-            ["author_id", "=", this.user.id]
-          ]
-        ]
+        event_id: this.user.id
       });
       for (const entry of events.data) {
         let descString = entry.event.description

@@ -46,6 +46,6 @@ func (s *SuggestionService) GetBySprintId(sprintId int) ([]augventure.FilterSugg
 	return filterSuggestions, nil
 }
 
-func (s *SuggestionService) Vote(voteType bool, suggestionId, userId int) error {
+func (s *SuggestionService) Vote(voteType bool, suggestionId, userId int) (int, error) {
 	return s.repo.Vote(voteType, suggestionId, userId)
 }

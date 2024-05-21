@@ -41,8 +41,8 @@
 
                     <div v-if="message.author_id !== this.user.id" class="like">
                       <div>
-                        <i @click="likeCounter(index, message.id)" class='bx bxs-like icon_like'></i>
-                        <i @click="dislikeCounter(index, message.id)" class='bx bxs-dislike icon_like'></i>
+                        <i @click="voteCounter(index, message.id, true)" class='bx bxs-like icon_like'></i>
+                        <i @click="voteCounter(index, message.id, false)" class='bx bxs-dislike icon_like'></i>
                       </div>
                       <div class="count_likes"> {{ message.likes }} </div>
                     </div>
@@ -159,12 +159,8 @@ export default {
 
       try {
         console.log("filterSuggestion", this.sprints_id)
-        const suggestions = await this.$api.suggestions.filterSuggestion({
-          "filter": [
-            [
-              ["sprint_id", "=", this.sprints_id]
-            ]
-          ]
+        const suggestions = await this.$api.suggestions.getSuggestion({
+          sprint_id: this.sprints_id
         });
 
         this.eventMessages[this.ID] = [];
@@ -205,50 +201,27 @@ export default {
     changeShow2() {
       this.show2 = !this.show2
     },
-    async likeCounter(index, id) {
+    async voteCounter(index, id, typeVote) {
       const message = this.eventMessages[this.ID][index];
-      if (message.likedByUser !== "like") {
-        if (message.likedByUser === "dislike") {
-          message.likes += 2; // Увеличиваем на 2, так как изначально уменьшалось на 1
-        } else {
-          message.likes += 1;
-        }
+      if (typeVote) {
         message.likedByUser = "like";
-        localStorage.setItem('chatMessages', JSON.stringify(this.eventMessages[this.ID]));
-
-        try {
-          const response = await this.$api.suggestions.voteSuggestion(id, {
-            vote_value: message.likes
-          });
-
-          console.log('Лайк успешно добавлен:', response.data);
-        } catch (error) {
-          console.error('Ошибка при добавлении лайка:', error);
-        }
-      }
-    },
-
-    async dislikeCounter(index, id) {
-      const message = this.eventMessages[this.ID][index];
-      if (message.likedByUser !== "dislike") {
-        if (message.likedByUser === "like") {
-          message.likes -= 2; // Уменьшаем на 2, так как изначально увеличивалось на 1
-        } else {
-          message.likes -= 1;
-        }
+      } else {
         message.likedByUser = "dislike";
-        localStorage.setItem('chatMessages', JSON.stringify(this.eventMessages[this.ID]));
-
-        try {
-          const response = await this.$api.suggestions.voteSuggestion(id, {
-            vote_value: message.likes
-          });
-
-          console.log('Дизлайк успешно добавлен:', response.data);
-        } catch (error) {
-          console.error('Ошибка при добавлении дизлайка:', error);
-        }
       }
+
+      localStorage.setItem('chatMessages', JSON.stringify(this.eventMessages[this.ID]));
+
+      try {
+        const response = await this.$api.suggestions.voteSuggestion(id, {
+          this_is_a_like: typeVote
+        });
+
+        console.log('Лайк успешно добавлен:', response.data);
+        message.likes = response
+      } catch (error) {
+        console.error('Ошибка при добавлении лайка:', error);
+      }
+
     },
     getMessageClasses(message, user) {
       return {
@@ -281,8 +254,8 @@ export default {
         }
 
         const response = await this.$api.suggestions.createSuggestion({
-          suggestion: {sprint_id: this.sprints_id},
-          content: {text_content: this.inputMessage}
+          sprint_id: this.sprints_id,
+          text_content: this.inputMessage
         })
 
         this.eventMessages[this.ID].push({

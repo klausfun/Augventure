@@ -70,13 +70,15 @@ func (h *Handler) voteSuggestions(c *gin.Context) {
 		return
 	}
 
-	err = h.services.Suggestion.Vote(input.VoteType, suggestionId, userId)
+	votes, err := h.services.Suggestion.Vote(input.VoteType, suggestionId, userId)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, statusResponse{"ok"})
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"votes": votes,
+	})
 }
 
 func (h *Handler) deleteSuggestions(c *gin.Context) {
