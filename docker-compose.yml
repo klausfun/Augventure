@@ -1,25 +1,42 @@
-#services:
-#  backend:
-#    container_name: augventure-backend
-#    build: ./backend
-#    ports:
-#      - "8000:8000"
-#    depends_on:
-#      - db
-#    environment:
-#      - DB_PASSWORD=qwerty
-#      - S3_ACCESS_KEY=YCAJELH0di87eQ6Zw1peP1Pve
-#      - S3_SECRET_KEY=YCMkMqwwNQz_Yx4YmGp9CCCIVbz6Kvo42u1yU9Sd
+version: '3.8'
+
+services:
+  db:
+    restart: always
+    image: postgres:latest
+    volumes:
+    - ./.database/postgres/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=qwerty
+    ports:
+      - 5436:5432
+
+  backend:
+    build: ./backend
+    depends_on:
+      - db
+    environment:
+      - DB_PASSWORD=qwerty
+      - S3_ACCESS_KEY=YCAJELH0di87eQ6Zw1peP1Pve
+      - S3_SECRET_KEY=YCMkMqwwNQz_Yx4YmGp9CCCIVbz6Kvo42u1yU9Sd
+    command: ./wait-for-postgres.sh db ./augventure-app
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend/migrations:/migrations
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "3000:3000"
 #
-#  frontend:
-#    container_name: augventure-frontend
-#    build: ./frontend
-#    ports:
-#      - "3000:3000"
-#    depends_on:
-#      - backend
+#version: '3.8'
+#
+#services:
 #  db:
-#    container_name: augventure-db
 #    restart: always
 #    image: postgres:latest
 #    volumes:
@@ -27,46 +44,20 @@
 #    environment:
 #      - POSTGRES_PASSWORD=qwerty
 #    ports:
-#      - "5436:5432"
-
-version: '3.8'
-
-services:
-  backend:
-    container_name: augventure-backend
-    build: ./backend
-    ports:
-      - "8000:8000"
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      - DB_PASSWORD=qwerty
-      - S3_ACCESS_KEY=YCAJELH0di87eQ6Zw1peP1Pve
-      - S3_SECRET_KEY=YCMkMqwwNQz_Yx4YmGp9CCCIVbz6Kvo42u1yU9Sd
-    command: ["/bin/sh", "-c", "./augventure-app migrate -path ./schema -database postgres://postgres:qwerty@db:5432/postgres?sslmode=disable up && ./augventure-app"]
-
-  frontend:
-    container_name: augventure-frontend
-    build: ./frontend
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
-
-  db:
-    container_name: augventure-db
-    restart: always
-    image: postgres:latest
-    volumes:
-      - ./.database/postgres/data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_PASSWORD=qwerty
-      - POSTGRES_DB=postgres
-    ports:
-      - "5436:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+#      - 5436:5432
+#
+#  backend:
+#    build: ./backend
+#    depends_on:
+#      - db
+#    environment:
+#      - DB_PASSWORD=qwerty
+#      - DB_HOST=db
+#      - DB_PORT=5432
+#      - S3_ACCESS_KEY=YCAJELH0di87eQ6Zw1peP1Pve
+#      - S3_SECRET_KEY=YCMkMqwwNQz_Yx4YmGp9CCCIVbz6Kvo42u1yU9Sd
+#    volumes:
+#      - ./backend/schema:/schema
+#    command: ./wait-for-postgres.sh db ./augventure-app
+#    ports:
+#      - 8000:8000
