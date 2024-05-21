@@ -67,10 +67,8 @@ export default {
             .catch((error) => console.log("Login error", error));
 
         const response = await this.$api.auth.login({
-          user: {
-            email: this.user.email,
-            password: this.user.password
-          }
+          email: this.user.email,
+          password: this.user.password
         });
         if (response && response.data) {
           const { token, user } = response.data;

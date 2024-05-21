@@ -37,7 +37,7 @@ export default {
   async beforeMount() {
     try {
       const events = await this.$api.events.filterEvents({
-        event_id: this.user.id
+        author_id: this.user.id
       });
       for (const entry of events.data) {
         let descString = entry.event.description

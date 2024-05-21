@@ -167,7 +167,7 @@ export default {
         for (const entry of suggestions.data) {
           this.eventMessages[this.ID].push({
             id: entry.id,
-            content: entry.post.text_content,
+            content: entry.content,
             sprint_id: entry.sprint_id,
             username: entry.author.username,
             avatar: entry.author.pfp_url,
@@ -217,7 +217,7 @@ export default {
         });
 
         console.log('Лайк успешно добавлен:', response.data);
-        message.likes = response
+        message.likes = response.data.votes
       } catch (error) {
         console.error('Ошибка при добавлении лайка:', error);
       }
@@ -259,7 +259,7 @@ export default {
         })
 
         this.eventMessages[this.ID].push({
-          id: response.data.id,
+          id: response.data.suggestionId, // было id: response.data.id
           author_id: this.user.id,
           content: this.inputMessage,
           username: this.user.username,
@@ -287,7 +287,7 @@ export default {
 
         try {
           const response = await this.$api.events.finishVoting(this.ID, {
-            suggestion_winner_id: [this.selectedIndex]
+            suggestion_winner_id: this.selectedIndex
           })
           this.sprintMessage = "";
 
@@ -301,8 +301,8 @@ export default {
     async finishImplementing(bool) {
       try {
         const response = await this.$api.events.finishImplementingEvent(this.ID, {
-          content: {text_content: this.sprintMessage},
-          is_last_sprint: bool
+          is_last_sprint: bool,
+          text_content: this.sprintMessage
         })
         this.sprintMessage = "";
 

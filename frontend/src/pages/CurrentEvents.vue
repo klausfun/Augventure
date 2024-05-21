@@ -28,13 +28,7 @@ export default {
   },
   async beforeMount() {
     try {
-      const events = await this.$api.events.filterEvents({
-        "filter": [ // or array
-          [ // and array
-            ["state", "in", ["in_progress", "scheduled"]]
-          ]
-        ]
-      });
+      const events = await this.$api.events.getAll();
       for (const entry of events.data) {
         let descString = entry.event.description
         if (descString.length > 30) {

@@ -64,12 +64,10 @@ export default {
       //     .catch((error) => console.log("Sign up error", error));
 
       try {
-        await this.$api.auth.signUp({
-          user: {
-            email: this.user.email,
-            username: this.user.username,
-            password: this.user.password
-          }
+        await response = this.$api.auth.signUp({
+          email: this.user.email,
+          username: this.user.username,
+          password: this.user.password
         });
         this.$router.push({ name: 'login' });
       } catch (error) {
