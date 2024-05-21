@@ -30,6 +30,10 @@ type SprintId struct {
 	Id int `json:"sprint_id" binding:"required"`
 }
 
+type AuthorId struct {
+	Id int `json:"author_id" binding:"required"`
+}
+
 type FilterSuggestions struct {
 	Id       int              `json:"id" db:"id"`
 	AuthorId int              `json:"author_id" db:"author_id"`

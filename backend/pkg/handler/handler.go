@@ -40,6 +40,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			events.PUT("/:id", h.updateEvent)
 			events.PATCH("/:id/finish_voting", h.finishVoting)
 			events.PATCH("/:id/finish_implementing", h.finishImplementing)
+			events.GET("/filter", h.filterEvents)
 		}
 
 		suggestions := api.Group("/suggestions")

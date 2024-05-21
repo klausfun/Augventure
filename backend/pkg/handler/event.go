@@ -81,6 +81,24 @@ func (h *Handler) getEventById(c *gin.Context) {
 	c.JSON(http.StatusOK, event)
 }
 
+func (h *Handler) filterEvents(c *gin.Context) {
+	var input augventure.AuthorId
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	events, err := h.services.Event.FilterEvents(input.Id)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, getAllEventsResponse{
+		Data: events,
+	})
+}
+
 func (h *Handler) updateEvent(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {

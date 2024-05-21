@@ -21,6 +21,10 @@ func (s *EventService) GetAll() ([]augventure.Event, error) {
 	return s.repo.GetAll()
 }
 
+func (s *EventService) FilterEvents(authorId int) ([]augventure.Event, error) {
+	return s.repo.FilterEvents(authorId)
+}
+
 func (s *EventService) GetById(eventId int) (augventure.Event, error) {
 	return s.repo.GetById(eventId)
 }

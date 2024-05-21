@@ -37,6 +37,14 @@ func (r *EventPostgres) GetAll() ([]augventure.Event, error) {
 	return events, err
 }
 
+func (r *EventPostgres) FilterEvents(authorId int) ([]augventure.Event, error) {
+	var events []augventure.Event
+	query := fmt.Sprintf("SELECT * FROM %s WHERE author_id = $1", eventsTable)
+	err := r.db.Select(&events, query, authorId)
+
+	return events, err
+}
+
 func (r *EventPostgres) GetById(eventId int) (augventure.Event, error) {
 	var event augventure.Event
 	query := fmt.Sprintf("SELECT * FROM %s WHERE id = $1", eventsTable)
