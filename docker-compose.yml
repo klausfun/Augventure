@@ -17,8 +17,8 @@ services:
       - db
     environment:
       - DB_PASSWORD=qwerty
-      - S3_ACCESS_KEY=YCAJELH0di87eQ6Zw1peP1Pve
-      - S3_SECRET_KEY=YCMkMqwwNQz_Yx4YmGp9CCCIVbz6Kvo42u1yU9Sd
+      - S3_ACCESS_KEY=YOUR_ACCESS_KEY
+      - S3_SECRET_KEY=YOUR_SECRET_KEY
     command: ./wait-for-postgres.sh db ./augventure-app
     ports:
       - 8000:8000

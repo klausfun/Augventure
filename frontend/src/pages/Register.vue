@@ -64,7 +64,7 @@ export default {
       //     .catch((error) => console.log("Sign up error", error));
 
       try {
-        await response = this.$api.auth.signUp({
+        await this.$api.auth.signUp({
           email: this.user.email,
           username: this.user.username,
           password: this.user.password
