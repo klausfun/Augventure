@@ -7,7 +7,7 @@ services:
     volumes:
     - ./.database/postgres/data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=qwerty
+      - POSTGRES_PASSWORD=YOUR_POSTGRES_PASSWORD
     ports:
       - 5436:5432
 
@@ -16,7 +16,7 @@ services:
     depends_on:
       - db
     environment:
-      - DB_PASSWORD=qwerty
+      - DB_PASSWORD=YOUR_DB_PASSWORD
       - S3_ACCESS_KEY=YOUR_ACCESS_KEY
       - S3_SECRET_KEY=YOUR_SECRET_KEY
     command: ./wait-for-postgres.sh db ./augventure-app
