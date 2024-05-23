@@ -22,8 +22,8 @@ services:
     command: ./wait-for-postgres.sh db ./augventure-app
     ports:
       - 8000:8000
-    volumes:
-      - ./backend/migrations:/migrations
+#    volumes:
+#      - ./backend/schema
   frontend:
     build: ./frontend
     depends_on:
@@ -31,4 +31,4 @@ services:
     volumes:
       - ./frontend/nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - "3000:3000"
+      - 3000:3000
