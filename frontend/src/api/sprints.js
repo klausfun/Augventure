@@ -1,10 +1,10 @@
 export default function (instance) {
     return {
         listSprints() {
-            return instance.get("sprints");
+            return instance.get("api/sprints");
         },
         createSprint(payload) {
-            return instance.post("sprints", payload);
+            return instance.post("api/sprints", payload);
         },
     };
 }

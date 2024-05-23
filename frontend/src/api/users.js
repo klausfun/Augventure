@@ -1,13 +1,13 @@
 export default function(instance) {
     return {
         myProfile() {
-            return instance.get('users/me')
+            return instance.get('api/users/me')
         },
         updateProfile(payload) {
-            return instance.put('users/me', payload)
+            return instance.put('api/users/me', payload)
         },
         uploadPFP(payload, headers) {
-            return instance.put('users/me/upload_pfp', payload, headers)
+            return instance.put('api/users/me/upload_pfp', payload, headers)
         }
     }
 }
