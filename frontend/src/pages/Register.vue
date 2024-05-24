@@ -39,7 +39,8 @@
 </template>
 
 <script>
-// import axios from "@axios";
+import axios from "axios";
+
 import { signupRest  } from "@/api/api";
 export default {
   data() {
@@ -53,22 +54,26 @@ export default {
   },
   methods: {
     async register() {
-      // signupRest(
-      //     this.username,
-      //     this.password,
-      //     this.email
-      // )
-      //     .then((response) =>
-      //         this.$emit("onAuth", { ...response.data, secret: this.password })
-      //     )
-      //     .catch((error) => console.log("Sign up error", error));
-
+      // try {
+      //   const response = await this.$api.auth.signUp({
+      //     email: this.user.email,
+      //     username: this.user.username,
+      //     password: this.user.password
+      //   });
+      //
+      //   console.log("RESPONSE", response)
+      //
+      //   this.$router.push({ name: 'login' });
+      // } catch (error) {
+      //   console.log('Registration failed:', error);
+      // }
       try {
-        await this.$api.auth.signUp({
+        const response = await axios.post('/auth/signup', {
           email: this.user.email,
           username: this.user.username,
           password: this.user.password
         });
+        console.log("RESPONSE: ", response)
         this.$router.push({ name: 'login' });
       } catch (error) {
         console.log('Registration failed:', error);

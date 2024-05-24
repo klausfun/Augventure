@@ -39,7 +39,7 @@
 <script>
 import { email, required, minLength } from 'vuelidate/lib/validators'
 import { exportTypedArrayMethod } from "core-js/internals/array-buffer-view-core";
-import axios from 'axios'
+import axios from "axios"
 import { loginRest } from "@/api/api";
 export default {
   name: 'login',
@@ -59,29 +59,37 @@ export default {
   },
   methods: {
     async login() {
+      // try {
+      //   const response = await this.$api.auth.login({
+      //     email: this.user.email,
+      //     password: this.user.password
+      //   });
+      //   if (response && response.data) {
+      //     const { token, user } = response.data;
+      //     console.log(user);
+      //     localStorage.setItem('token', token);
+      //     localStorage.setItem('user', JSON.stringify(user));
+      //     this.$router.push({ name: 'profile' });
+      //   } else {
+      //     console.log('Response data is undefined', response);
+      //   }
+      // } catch (error) {
+      //   console.log(error.message);
+      // }
       try {
-        loginRest(this.username, this.password)
-            .then((response) =>
-                this.$emit("onAuth", { ...response.data, secret: this.password })
-            )
-            .catch((error) => console.log("Login error", error));
-
-        const response = await this.$api.auth.login({
+        const response = await axios.post('http://localhost:8000/auth/signin', {
           email: this.user.email,
           password: this.user.password
         });
         if (response && response.data) {
-          const { token, user } = response.data;
-          console.log(user);
+          const { token } = response.data;
           localStorage.setItem('token', token);
-          localStorage.setItem('user', JSON.stringify(user));
           this.$router.push({ name: 'profile' });
-        } else {
-          console.log('Response data is undefined', response);
         }
       } catch (error) {
-        console.log(error.message);
+        console.log('Login failed:', error);
       }
+
     },
   },
 
