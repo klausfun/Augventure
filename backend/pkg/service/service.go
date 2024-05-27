@@ -31,6 +31,7 @@ type Sprint interface {
 
 type Profile interface {
 	GetById(userId int) (augventure.Author, error)
+	UpdatePassword(userId int, input augventure.UpdatePasswordInput) error
 }
 
 type Suggestion interface {
@@ -53,6 +54,6 @@ func NewService(repos *repository.Repository, storage *infrastructure.S3Storage)
 		Event:         NewEventService(repos.Event),
 		Sprint:        NewSprintService(repos.Sprint),
 		Suggestion:    NewSuggestionService(repos.Suggestion, storage),
-		Profile:       NewUserService(repos.Profile),
+		Profile:       NewProfileService(repos.Profile),
 	}
 }

@@ -5,14 +5,21 @@ import (
 	"github.com/klausfun/Augventure/pkg/repository"
 )
 
-type UserService struct {
+type ProfileService struct {
 	repo repository.Profile
 }
 
-func NewUserService(repo repository.Profile) *UserService {
-	return &UserService{repo: repo}
+func NewProfileService(repo repository.Profile) *ProfileService {
+	return &ProfileService{repo: repo}
 }
 
-func (s *UserService) GetById(userId int) (augventure.Author, error) {
+func (s *ProfileService) GetById(userId int) (augventure.Author, error) {
 	return s.repo.GetById(userId)
+}
+
+func (s *ProfileService) UpdatePassword(userId int, input augventure.UpdatePasswordInput) error {
+	input.NewPassword = generatePasswordHash(input.NewPassword)
+	input.OldPassword = generatePasswordHash(input.OldPassword)
+
+	return s.repo.UpdatePassword(userId, input)
 }

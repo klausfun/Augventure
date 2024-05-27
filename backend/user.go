@@ -1,5 +1,7 @@
 package augventure
 
+import "errors"
+
 type User struct {
 	Id       int    `json:"-" db:"id"`
 	Name     string `json:"name"`
@@ -17,4 +19,17 @@ type Author struct {
 	Email    string `json:"email" db:"email"`
 	PfpUrl   string `json:"pfp_url" db:"pfp_url"`
 	Bio      string `json:"bio" db:"bio"`
+}
+
+type UpdatePasswordInput struct {
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
+}
+
+func (i UpdatePasswordInput) Validate() error {
+	if len(i.NewPassword) < 8 {
+		return errors.New("the password is too short")
+	}
+
+	return nil
 }
