@@ -59,36 +59,36 @@ export default {
   },
   methods: {
     async login() {
-      // try {
-      //   const response = await this.$api.auth.login({
-      //     email: this.user.email,
-      //     password: this.user.password
-      //   });
-      //   if (response && response.data) {
-      //     const { token, user } = response.data;
-      //     console.log(user);
-      //     localStorage.setItem('token', token);
-      //     localStorage.setItem('user', JSON.stringify(user));
-      //     this.$router.push({ name: 'profile' });
-      //   } else {
-      //     console.log('Response data is undefined', response);
-      //   }
-      // } catch (error) {
-      //   console.log(error.message);
-      // }
       try {
-        const response = await axios.post('http://localhost:8000/auth/signin', {
+        const response = await this.$api.auth.login({
           email: this.user.email,
           password: this.user.password
         });
         if (response && response.data) {
-          const { token } = response.data;
+          const { token, user } = response.data;
+          console.log(user);
           localStorage.setItem('token', token);
+          localStorage.setItem('user', JSON.stringify(user));
           this.$router.push({ name: 'profile' });
+        } else {
+          console.log('Response data is undefined', response);
         }
       } catch (error) {
-        console.log('Login failed:', error);
+        console.log(error.message);
       }
+      // try {
+      //   const response = await axios.post('http://localhost:8000/auth/signin', {
+      //     email: this.user.email,
+      //     password: this.user.password
+      //   });
+      //   if (response && response.data) {
+      //     const { token } = response.data;
+      //     localStorage.setItem('token', token);
+      //     this.$router.push({ name: 'profile' });
+      //   }
+      // } catch (error) {
+      //   console.log('Login failed:', error);
+      // }
 
     },
   },

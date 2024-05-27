@@ -5,7 +5,7 @@ const API_BASE_URL = "http://localhost:8000";
 
 const loginRest = async (username, secret) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/auth/sign-in`, {
+        const response = await axios.post(`${API_BASE_URL}/auth/signin`, {
             username,
             secret
         });
@@ -18,7 +18,7 @@ const loginRest = async (username, secret) => {
 
 const signupRest = async (username, secret, email, first_name, last_name) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/auth/sign-up`, {
+        const response = await axios.post(`${API_BASE_URL}/auth/signup`, {
             username,
             secret,
             email,

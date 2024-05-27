@@ -54,30 +54,30 @@ export default {
   },
   methods: {
     async register() {
-      // try {
-      //   const response = await this.$api.auth.signUp({
-      //     email: this.user.email,
-      //     username: this.user.username,
-      //     password: this.user.password
-      //   });
-      //
-      //   console.log("RESPONSE", response)
-      //
-      //   this.$router.push({ name: 'login' });
-      // } catch (error) {
-      //   console.log('Registration failed:', error);
-      // }
       try {
-        const response = await axios.post('/auth/signup', {
+        const response = await this.$api.auth.signUp({
           email: this.user.email,
           username: this.user.username,
           password: this.user.password
         });
-        console.log("RESPONSE: ", response)
+
+        console.log("RESPONSE", response)
+
         this.$router.push({ name: 'login' });
       } catch (error) {
         console.log('Registration failed:', error);
       }
+      // try {
+      //   const response = await axios.post('/auth/signup', {
+      //     email: this.user.email,
+      //     username: this.user.username,
+      //     password: this.user.password
+      //   });
+      //   console.log("RESPONSE: ", response)
+      //   this.$router.push({ name: 'login' });
+      // } catch (error) {
+      //   console.log('Registration failed:', error);
+      // }
     }
   }
 
