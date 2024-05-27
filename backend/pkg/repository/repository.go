@@ -28,6 +28,7 @@ type Sprint interface {
 }
 
 type Profile interface {
+	GetById(userId int) (augventure.Author, error)
 }
 
 type Suggestion interface {
@@ -50,5 +51,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 		Event:         NewEventPostgres(db),
 		Sprint:        NewSprintPostgres(db),
 		Suggestion:    NewSuggestionPostgres(db),
+		Profile:       NewUserPostgres(db),
 	}
 }

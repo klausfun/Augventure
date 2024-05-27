@@ -35,13 +35,13 @@ type AuthorId struct {
 }
 
 type FilterSuggestions struct {
-	Id       int              `json:"id" db:"id"`
-	AuthorId int              `json:"author_id" db:"author_id"`
-	SprintId int              `json:"sprint_id" db:"sprint_id"`
-	Author   AuthorSuggestion `json:"author"`
-	Content  string           `json:"content" db:"link_to_the_text"`
-	PostDate string           `json:"post_date" db:"post_date"` // time.Time
-	Votes    int              `json:"votes" db:"votes"`
+	Id       int    `json:"id" db:"id"`
+	AuthorId int    `json:"author_id" db:"author_id"`
+	SprintId int    `json:"sprint_id" db:"sprint_id"`
+	Author   Author `json:"author"`
+	Content  string `json:"content" db:"link_to_the_text"`
+	PostDate string `json:"post_date" db:"post_date"` // time.Time
+	Votes    int    `json:"votes" db:"votes"`
 }
 
 type Vote struct {

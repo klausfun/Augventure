@@ -10,7 +10,7 @@ type User struct {
 	Bio      string `json:"bio"`
 }
 
-type AuthorSuggestion struct {
+type Author struct {
 	Id       int    `json:"-" db:"id"`
 	Name     string `json:"name" db:"name"`
 	Username string `json:"username" db:"username"`

@@ -49,7 +49,7 @@ func (r *SuggestionPostgres) GetBySprintId(sprintId int) ([]augventure.FilterSug
 	}
 
 	for i, curSuggestion := range suggestions {
-		var author augventure.AuthorSuggestion
+		var author augventure.Author
 
 		queryAuthor := fmt.Sprintf("SELECT id, name, username, email, bio, pfp_url FROM %s WHERE id = $1", userTable)
 		err := r.db.Get(&author, queryAuthor, curSuggestion.AuthorId)
