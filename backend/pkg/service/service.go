@@ -8,7 +8,7 @@ import (
 
 type Authorization interface {
 	CreateUser(user augventure.User) (int, error)
-	GenerateToken(password, email string) (string, error)
+	GenerateToken(password, email string) (augventure.Author, string, error)
 	ParseToken(token string) (int, error)
 }
 

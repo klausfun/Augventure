@@ -26,9 +26,10 @@ func (r *AuthPostgres) CreateUser(user augventure.User) (int, error) {
 	return id, nil
 }
 
-func (r *AuthPostgres) GetUser(password, email string) (augventure.User, error) {
-	var user augventure.User
-	query := fmt.Sprintf("SELECT id FROM %s WHERE password_hash=$1 AND email=$2", userTable)
+func (r *AuthPostgres) GetUser(password, email string) (augventure.Author, error) {
+	var user augventure.Author
+	query := fmt.Sprintf("SELECT id, name, username, email, pfp_url, bio FROM %s"+
+		" WHERE password_hash=$1 AND email=$2", userTable)
 	err := r.db.Get(&user, query, password, email)
 
 	return user, err

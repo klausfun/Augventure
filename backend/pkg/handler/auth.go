@@ -28,6 +28,11 @@ type signInInput struct {
 	Email    string `json:"email" binding:"required"`
 }
 
+type getAuthorAndTokenResponse struct {
+	User  augventure.Author `json:"user"`
+	Token string            `json:"token"`
+}
+
 func (h *Handler) signIn(c *gin.Context) {
 	var input signInInput
 
@@ -36,11 +41,14 @@ func (h *Handler) signIn(c *gin.Context) {
 		return
 	}
 
-	token, err := h.services.Authorization.GenerateToken(input.Password, input.Email)
+	user, token, err := h.services.Authorization.GenerateToken(input.Password, input.Email)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{"token": token})
+	c.JSON(http.StatusOK, getAuthorAndTokenResponse{
+		User:  user,
+		Token: token,
+	})
 }

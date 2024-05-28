@@ -34,10 +34,14 @@ func (s *AuthService) CreateUser(user augventure.User) (int, error) {
 	return s.repo.CreateUser(user)
 }
 
-func (s *AuthService) GenerateToken(password, email string) (string, error) {
+func (s *AuthService) GetUser(password, email string) (augventure.Author, error) {
+	return s.repo.GetUser(password, email)
+}
+
+func (s *AuthService) GenerateToken(password, email string) (augventure.Author, string, error) {
 	user, err := s.repo.GetUser(generatePasswordHash(password), email)
 	if err != nil {
-		return "", err
+		return augventure.Author{}, "", err
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
@@ -48,7 +52,8 @@ func (s *AuthService) GenerateToken(password, email string) (string, error) {
 		user.Id,
 	})
 
-	return token.SignedString([]byte(signingKey))
+	strToken, err := token.SignedString([]byte(signingKey))
+	return user, strToken, err
 }
 
 func (s *AuthService) ParseToken(accessToken string) (int, error) {
