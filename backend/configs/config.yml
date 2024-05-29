@@ -10,6 +10,6 @@ db:
   sslmode: "disable"
 
 s3:
-  bucketName: "augventure"
+  bucketName: "augbacket"
   region: "ru-central1"
   endpoint: "https://storage.yandexcloud.net"
