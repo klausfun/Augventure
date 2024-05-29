@@ -50,7 +50,7 @@ func (h *Handler) createEvents(c *gin.Context) {
 }
 
 type getAllEventsResponse struct {
-	Data []augventure.Event `json:"data"`
+	Data []augventure.EventAndSprints `json:"data"`
 }
 
 func (h *Handler) getAllEvents(c *gin.Context) {
@@ -88,15 +88,16 @@ func (h *Handler) filterEvents(c *gin.Context) {
 		return
 	}
 
-	events, err := h.services.Event.FilterEvents(input.Id)
+	_, err := h.services.Event.FilterEvents(input.Id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, getAllEventsResponse{
-		Data: events,
-	})
+	//c.JSON(http.StatusOK, getAllEventsResponse{
+	//	Data: events,
+	//})
+	c.JSON(http.StatusOK, statusResponse{"ok"})
 }
 
 func (h *Handler) updateEvent(c *gin.Context) {

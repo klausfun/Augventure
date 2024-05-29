@@ -15,6 +15,20 @@ type Event struct {
 	CreationDate string `json:"creation_date" db:"creation_date"`
 }
 
+type EventAndSprints struct {
+	Event   Event            `json:"event"`
+	Sprints []SprintFullInfo `json:"sprints"`
+}
+
+type SprintFullInfo struct {
+	Id                 int    `json:"id" db:"id"`
+	EventId            int    `json:"event_id" db:"event_id"`
+	SuggestionWinnerId int    `json:"suggestion_winner_id" db:"suggestion_winner_id"`
+	StateId            int    `json:"state_id" db:"state_id"`
+	Start              string `json:"start" db:"start"`
+	WinnerDescription  string `json:"winner_description" db:"winner_description"`
+}
+
 type Sprint struct {
 	Id      int `json:"id"`
 	EventId int `json:"event_id" binding:"required"`

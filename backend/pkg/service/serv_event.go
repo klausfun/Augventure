@@ -17,7 +17,7 @@ func (s *EventService) Create(userId int, event augventure.Event) (int, error) {
 	return s.repo.Create(userId, event)
 }
 
-func (s *EventService) GetAll() ([]augventure.Event, error) {
+func (s *EventService) GetAll() ([]augventure.EventAndSprints, error) {
 	return s.repo.GetAll()
 }
 

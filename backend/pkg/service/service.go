@@ -14,7 +14,7 @@ type Authorization interface {
 
 type Event interface {
 	Create(userId int, event augventure.Event) (int, error)
-	GetAll() ([]augventure.Event, error)
+	GetAll() ([]augventure.EventAndSprints, error)
 	GetById(eventId int) (augventure.Event, error)
 	Delete(userId, eventId int) error
 	Update(userId, eventId int, input augventure.UpdateEventInput) error

@@ -29,12 +29,31 @@ func (r *EventPostgres) Create(userId int, event augventure.Event) (int, error) 
 	return id, nil
 }
 
-func (r *EventPostgres) GetAll() ([]augventure.Event, error) {
-	var events []augventure.Event
-	query := fmt.Sprintf("SELECT * FROM %s", eventsTable)
-	err := r.db.Select(&events, query)
+func (r *EventPostgres) GetAll() ([]augventure.EventAndSprints, error) {
+	var eventsAndSprints []augventure.EventAndSprints
 
-	return events, err
+	var events []augventure.Event
+	queryEvents := fmt.Sprintf("SELECT * FROM %s", eventsTable)
+	err := r.db.Select(&events, queryEvents)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println("events", events)
+	fmt.Println()
+	for _, curEvent := range events {
+		var sprints []augventure.SprintFullInfo
+
+		querySprints := fmt.Sprintf("SELECT * FROM %s WHERE event_id = $1", sprintsTable)
+		err := r.db.Select(&sprints, querySprints, curEvent.Id)
+		if err != nil {
+			return nil, err
+		}
+
+		eventsAndSprints = append(eventsAndSprints, augventure.EventAndSprints{Event: curEvent, Sprints: sprints})
+	}
+
+	return eventsAndSprints, nil
 }
 
 func (r *EventPostgres) FilterEvents(authorId int) ([]augventure.Event, error) {
