@@ -54,12 +54,29 @@ func (r *EventPostgres) GetAll() ([]augventure.EventAndSprints, error) {
 	return eventsAndSprints, nil
 }
 
-func (r *EventPostgres) FilterEvents(authorId int) ([]augventure.Event, error) {
-	var events []augventure.Event
-	query := fmt.Sprintf("SELECT * FROM %s WHERE author_id = $1", eventsTable)
-	err := r.db.Select(&events, query, authorId)
+func (r *EventPostgres) FilterEvents(authorId int) ([]augventure.EventAndSprints, error) {
+	var eventsAndSprints []augventure.EventAndSprints
 
-	return events, err
+	var events []augventure.Event
+	queryEvents := fmt.Sprintf("SELECT * FROM %s WHERE author_id = $1", eventsTable)
+	err := r.db.Select(&events, queryEvents, authorId)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, curEvent := range events {
+		var sprints []augventure.SprintFullInfo
+
+		querySprints := fmt.Sprintf("SELECT * FROM %s WHERE event_id = $1", sprintsTable)
+		err := r.db.Select(&sprints, querySprints, curEvent.Id)
+		if err != nil {
+			return nil, err
+		}
+
+		eventsAndSprints = append(eventsAndSprints, augventure.EventAndSprints{Event: curEvent, Sprints: sprints})
+	}
+
+	return eventsAndSprints, nil
 }
 
 func (r *EventPostgres) GetById(eventId int) (augventure.EventAndSprints, error) {

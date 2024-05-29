@@ -19,7 +19,7 @@ type Event interface {
 	FinishVoting(userId, eventId, suggestionWinnerId int) (int, error)
 	FinishImplementing(userId, eventId int) (int, error)
 	CheckingTheStatus(eventId int) (bool, error)
-	FilterEvents(authorId int) ([]augventure.Event, error)
+	FilterEvents(authorId int) ([]augventure.EventAndSprints, error)
 }
 
 type Sprint interface {

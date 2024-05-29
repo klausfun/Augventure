@@ -88,16 +88,15 @@ func (h *Handler) filterEvents(c *gin.Context) {
 		return
 	}
 
-	_, err := h.services.Event.FilterEvents(input.Id)
+	events, err := h.services.Event.FilterEvents(input.Id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	//c.JSON(http.StatusOK, getAllEventsResponse{
-	//	Data: events,
-	//})
-	c.JSON(http.StatusOK, statusResponse{"ok"})
+	c.JSON(http.StatusOK, getAllEventsResponse{
+		Data: events,
+	})
 }
 
 func (h *Handler) updateEvent(c *gin.Context) {
