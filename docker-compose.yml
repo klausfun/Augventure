@@ -5,7 +5,7 @@ services:
     restart: always
     image: postgres:latest
     volumes:
-    - ./.database/postgres/data:/var/lib/postgresql/data
+      - ./.database/postgres/data:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=qwerty
     ports:
@@ -22,8 +22,7 @@ services:
     command: ./wait-for-postgres.sh db ./augventure-app
     ports:
       - 8000:8000
-#    volumes:
-#      - ./backend/schema
+
   frontend:
     build: ./frontend
     depends_on:
