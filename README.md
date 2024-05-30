@@ -40,7 +40,11 @@ A platform for collaborative content creation with the audience.
 ## Локальный запуск
 Для развертывания сервиса необходимы [Docker](https://docs.docker.com/engine/install/) и [Docker Compose](https://docs.docker.com/compose/).
 
-**Важно:** для запуска необходимы файлы конфигурации с секретными ключами. В репозитории предоставлены шаблоны для этих файлов, которые требуется скопировать и переименовать: \
+**Важно:** для запуска необходимы файлы конфигурации с секретными ключами. Создайте файл .env по пути ./backend и добавьте туда следующие строчки:\
+`DB_PASSWORD=...`\
+`S3_ACCESS_KEY=...`\
+`S3_SECRET_KEY=...`\
+В репозитории предоставлены и другие шаблоны, которые требуется скопировать и переименовать: \
 в `backend/configs/config.yml` используется облачное хранилище s3. Необходимо использовать ваши bucketName, region и endpoint. \
 В `docker-compose.yml` нужно заменить в следующих строках пароли и ключи:\
 `POSTGRES_PASSWORD=qwerty` -> `POSTGRES_PASSWORD=...`\
