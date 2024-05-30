@@ -9,6 +9,8 @@ CREATE TABLE users
     bio           text         not null default ''
 );
 
+CREATE INDEX users_email_index ON users (email);
+
 CREATE TABLE event_states
 (
     id   serial      not null unique,
