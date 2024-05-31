@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"github.com/joho/godotenv"
 	augventure "github.com/klausfun/Augventure"
 	"github.com/klausfun/Augventure/pkg/handler"
@@ -8,6 +10,7 @@ import (
 	"github.com/klausfun/Augventure/pkg/repository"
 	"github.com/klausfun/Augventure/pkg/service"
 	_ "github.com/lib/pq"
+	"github.com/redis/go-redis/v9"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"log"
@@ -36,6 +39,18 @@ func main() {
 		logrus.Fatalf("failed to initialize db: %s", err.Error())
 	}
 
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     viper.GetString("redis.hostAndPort"),
+		Password: "", // os.Getenv("REDIS_PASSWORD")
+		DB:       viper.GetInt("redis.dbname"),
+	})
+
+	ping, err := redisClient.Ping(context.Background()).Result()
+	if err != nil {
+		logrus.Fatalf("failed to initialize redis: %s", err.Error())
+	}
+	fmt.Println(ping)
+
 	// Инициализация Yandex Object Storage
 	cloudStorage, err := infrastructure.NewS3Storage(
 		viper.GetString("s3.bucketName"),
@@ -48,7 +63,7 @@ func main() {
 		logrus.Fatalf("failed to initialize cloud storage: %s", err.Error())
 	}
 
-	repos := repository.NewRepository(db)
+	repos := repository.NewRepository(db, redisClient)
 	services := service.NewService(repos, cloudStorage)
 	handlers := handler.NewHandler(services)
 

@@ -3,6 +3,7 @@ package repository
 import (
 	"github.com/jmoiron/sqlx"
 	augventure "github.com/klausfun/Augventure"
+	"github.com/redis/go-redis/v9"
 )
 
 type Authorization interface {
@@ -46,12 +47,12 @@ type Repository struct {
 	Suggestion
 }
 
-func NewRepository(db *sqlx.DB) *Repository {
+func NewRepository(db *sqlx.DB, redis *redis.Client) *Repository {
 	return &Repository{
-		Authorization: NewAuthPostgres(db),
+		Authorization: NewAuthPostgres(db, redis),
 		Event:         NewEventPostgres(db),
 		Sprint:        NewSprintPostgres(db),
 		Suggestion:    NewSuggestionPostgres(db),
-		Profile:       NewProfilePostgres(db),
+		Profile:       NewProfilePostgres(db, redis),
 	}
 }

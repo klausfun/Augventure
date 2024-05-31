@@ -1,13 +1,17 @@
 port: "8000"
 
 db:
-  host: "db"
-  port: "5432"
-#  host: "localhost"
-#  port: "5436"
+#  host: "db"
+#  port: "5432"
+  host: "localhost"
+  port: "5436"
   username: "postgres"
   dbname: "postgres"
   sslmode: "disable"
+
+redis:
+  hostAndPort: "localhost:6379"
+  dbname: 0
 
 s3:
   bucketName: "augbacket"

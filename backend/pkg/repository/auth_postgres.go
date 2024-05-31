@@ -1,17 +1,21 @@
 package repository
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	augventure "github.com/klausfun/Augventure"
+	"github.com/redis/go-redis/v9"
 )
 
 type AuthPostgres struct {
-	db *sqlx.DB
+	db    *sqlx.DB
+	redis *redis.Client
 }
 
-func NewAuthPostgres(db *sqlx.DB) *AuthPostgres {
-	return &AuthPostgres{db: db}
+func NewAuthPostgres(db *sqlx.DB, redis *redis.Client) *AuthPostgres {
+	return &AuthPostgres{db: db, redis: redis}
 }
 
 func (r *AuthPostgres) CreateUser(user augventure.User) (int, error) {
@@ -23,7 +27,23 @@ func (r *AuthPostgres) CreateUser(user augventure.User) (int, error) {
 		return 0, err
 	}
 
-	return id, nil
+	jsonString, err := json.Marshal(augventure.Author{
+		Id:       id,
+		Username: user.Username,
+		Email:    user.Email,
+	})
+	if err != nil {
+		fmt.Printf("Failed to marshal: %s", err.Error())
+		return id, err
+	}
+
+	personKey := fmt.Sprintf("person:%d", id)
+	err = r.redis.Set(context.Background(), personKey, jsonString, 0).Err()
+	if err != nil {
+		fmt.Printf("Failed to set value in the redis instance: %s", err.Error())
+	}
+
+	return id, err
 }
 
 func (r *AuthPostgres) GetUser(password, email string) (augventure.Author, error) {
