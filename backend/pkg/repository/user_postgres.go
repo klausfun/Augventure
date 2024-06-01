@@ -35,7 +35,7 @@ func (r *ProfilePostgres) GetById(userId int) (augventure.Author, error) {
 
 	err = json.Unmarshal([]byte(val), &user)
 	if err != nil {
-		log.Fatalf("Error unmarshaling JSON: %s", err)
+		log.Fatalf("Error unmarshaling JSON: %s", err.Error())
 		return user, err
 	}
 
@@ -45,6 +45,10 @@ func (r *ProfilePostgres) GetById(userId int) (augventure.Author, error) {
 func (r *ProfilePostgres) UpdatePassword(userId int, input augventure.UpdatePasswordInput) error {
 	query := fmt.Sprintf("UPDATE %s SET password_hash = $1 WHERE id = $2 AND password_hash = $3", userTable)
 	_, err := r.db.Exec(query, input.NewPassword, userId, input.OldPassword)
+	if err != nil {
+		log.Fatalf("Error updating password in PostgreSQL: %s", err.Error())
+		return err
+	}
 
 	return err
 }

@@ -6,6 +6,8 @@ import (
 	"github.com/klausfun/Augventure/pkg/repository"
 )
 
+//go:generate mockgen -source=service.go -destination=mocks/mock.go
+
 type Authorization interface {
 	CreateUser(user augventure.User) (int, error)
 	GenerateToken(password, email string) (augventure.Author, string, error)
