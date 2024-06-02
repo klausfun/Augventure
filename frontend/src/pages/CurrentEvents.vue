@@ -29,6 +29,7 @@ export default {
   async beforeMount() {
     try {
       const events = await this.$api.events.getAll();
+      console.log("events: ", events)
       for (const entry of events.data) {
         let descString = entry.event.description
         if (descString.length > 30) {
