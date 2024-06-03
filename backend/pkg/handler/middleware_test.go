@@ -7,7 +7,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/klausfun/Augventure/pkg/service"
 	mock_service "github.com/klausfun/Augventure/pkg/service/mocks"
-	"github.com/magiconair/properties/assert"
+	"github.com/stretchr/testify/assert"
 	"net/http/httptest"
 	"testing"
 )
@@ -101,6 +101,45 @@ func TestHandler_userIdentity(t *testing.T) {
 			// Assert
 			assert.Equal(t, w.Code, testCase.expectedStatusCode)
 			assert.Equal(t, w.Body.String(), testCase.expectedRequestBody)
+		})
+	}
+}
+
+func TestGetUserId(t *testing.T) {
+	var getContext = func(id int) *gin.Context {
+		ctx := &gin.Context{}
+		ctx.Set(userCtx, id)
+		return ctx
+	}
+
+	testTable := []struct {
+		name       string
+		ctx        *gin.Context
+		id         int
+		shouldFail bool
+	}{
+		{
+			name: "Ok",
+			ctx:  getContext(1),
+			id:   1,
+		},
+		{
+			ctx:        &gin.Context{},
+			name:       "Empty",
+			shouldFail: true,
+		},
+	}
+
+	for _, test := range testTable {
+		t.Run(test.name, func(t *testing.T) {
+			id, err := getUserId(test.ctx)
+			if test.shouldFail {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+
+			assert.Equal(t, id, test.id)
 		})
 	}
 }
