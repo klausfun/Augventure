@@ -40,7 +40,7 @@ func (h *Handler) updatePassword(c *gin.Context) {
 
 	var input augventure.UpdatePasswordInput
 	if err := c.BindJSON(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		newErrorResponse(c, http.StatusBadRequest, "invalid input body")
 		return
 	}
 
