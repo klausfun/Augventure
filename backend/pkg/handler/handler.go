@@ -42,7 +42,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			events.PATCH("/:id/finish_implementing", h.finishImplementing)
 			events.GET("/filter", h.filterEvents)
 		}
-
 		suggestions := api.Group("/suggestions")
 		{
 			suggestions.POST("/", h.createSuggestions)
