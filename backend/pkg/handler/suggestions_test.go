@@ -138,6 +138,14 @@ func TestHandler_createSuggestions(t *testing.T) {
 			expectedRequestBody: `{"suggestionId":1}`,
 		},
 		{
+			name:                "Empty Fields",
+			inputUserId:         1,
+			inputBody:           `{"text_content":"text_content"}`,
+			mockBehavior:        func(s *mock_service.MockSuggestion, userId int, input augventure.Suggestion) {},
+			expectedStatusCode:  400,
+			expectedRequestBody: `{"message":"invalid input body"}`,
+		},
+		{
 			name:        "Service Failure",
 			inputUserId: 1,
 			inputBody:   `{"sprint_id":1,"text_content":"text_content"}`,
@@ -146,37 +154,11 @@ func TestHandler_createSuggestions(t *testing.T) {
 				TextContent: "text_content",
 			},
 			mockBehavior: func(s *mock_service.MockSuggestion, userId int, input augventure.Suggestion) {
-				s.EXPECT().Create(userId, input).Return(1, nil)
+				s.EXPECT().Create(userId, input).Return(0, errors.New("service failure"))
 			},
-			expectedStatusCode:  200,
-			expectedRequestBody: `{"suggestionId":1}`,
+			expectedStatusCode:  500,
+			expectedRequestBody: `{"message":"service failure"}`,
 		},
-		//{
-		//	name:          "Service Failure",
-		//	inputBody:     `{"sprint_id":1}`,
-		//	inputSprintId: 1,
-		//	mockBehavior: func(s *mock_service.MockSuggestion, sprintId int) {
-		//		s.EXPECT().GetBySprintId(sprintId).Return([]augventure.FilterSuggestions{
-		//			{
-		//				Id:       1,
-		//				AuthorId: 1,
-		//				SprintId: 1,
-		//				Author: augventure.Author{
-		//					Name:     "",
-		//					Username: "test",
-		//					Email:    "test@mail.ru",
-		//					PfpUrl:   "",
-		//					Bio:      "",
-		//				},
-		//				Content:  "content",
-		//				PostDate: "",
-		//				Votes:    0,
-		//			},
-		//		}, errors.New("service failure"))
-		//	},
-		//	expectedStatusCode:  500,
-		//	expectedRequestBody: `{"message":"service failure"}`,
-		//},
 	}
 
 	for _, testCase := range testTable {

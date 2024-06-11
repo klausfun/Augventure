@@ -15,7 +15,7 @@ func (h *Handler) createSuggestions(c *gin.Context) {
 
 	var input augventure.Suggestion
 	if err := c.BindJSON(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		newErrorResponse(c, http.StatusBadRequest, "invalid input body")
 		return
 	}
 
