@@ -193,3 +193,103 @@ func TestHandler_createSuggestions(t *testing.T) {
 		})
 	}
 }
+
+func TestHandler_voteSuggestions(t *testing.T) {
+	type mockBehavior func(s *mock_service.MockSuggestion, VoteType bool, suggestionId, userId int)
+
+	testTable := []struct {
+		name                string
+		inputBody           string
+		inputUserId         int
+		inputSuggestionId   int
+		inputLike           augventure.Vote
+		mockBehavior        mockBehavior
+		expectedStatusCode  int
+		expectedRequestBody string
+	}{
+		{
+			name:              "OK",
+			inputUserId:       1,
+			inputSuggestionId: 1,
+			inputBody:         `{"this_is_a_like":true}`,
+			inputLike: augventure.Vote{
+				VoteType: true,
+			},
+			mockBehavior: func(s *mock_service.MockSuggestion, voteType bool, suggestionId, userId int) {
+				s.EXPECT().Vote(voteType, suggestionId, userId).Return(1, nil)
+			},
+			expectedStatusCode:  200,
+			expectedRequestBody: `{"votes":1}`,
+		},
+		{
+			name:              "OK",
+			inputUserId:       1,
+			inputSuggestionId: 1,
+			inputBody:         `{"this_is_a_like":false}`,
+			inputLike: augventure.Vote{
+				VoteType: false,
+			},
+			mockBehavior: func(s *mock_service.MockSuggestion, voteType bool, suggestionId, userId int) {
+				s.EXPECT().Vote(voteType, suggestionId, userId).Return(-1, nil)
+			},
+			expectedStatusCode:  200,
+			expectedRequestBody: `{"votes":-1}`,
+		},
+		{
+			name:                "Empty Fields",
+			inputUserId:         1,
+			inputSuggestionId:   1,
+			inputBody:           `{"this_is_a_like":}`,
+			mockBehavior:        func(s *mock_service.MockSuggestion, voteType bool, suggestionId, userId int) {},
+			expectedStatusCode:  400,
+			expectedRequestBody: `{"message":"invalid input body"}`,
+		},
+		{
+			name:              "Service Failure",
+			inputUserId:       1,
+			inputSuggestionId: 1,
+			inputBody:         `{"this_is_a_like":true}`,
+			inputLike: augventure.Vote{
+				VoteType: true,
+			},
+			mockBehavior: func(s *mock_service.MockSuggestion, voteType bool, suggestionId, userId int) {
+				s.EXPECT().Vote(voteType, suggestionId, userId).Return(0, errors.New("service failure"))
+			},
+			expectedStatusCode:  500,
+			expectedRequestBody: `{"message":"service failure"}`,
+		},
+	}
+
+	for _, testCase := range testTable {
+		t.Run(testCase.name, func(t *testing.T) {
+			// Init Deps
+			c := gomock.NewController(t)
+			defer c.Finish()
+
+			apiSuggestion := mock_service.NewMockSuggestion(c)
+			testCase.mockBehavior(apiSuggestion, testCase.inputLike.VoteType, testCase.inputSuggestionId, testCase.inputUserId)
+
+			services := &service.Service{Suggestion: apiSuggestion}
+			handler := NewHandler(services)
+
+			// Test Server
+			r := gin.New()
+			r.PUT("/api/suggestions/:id/vote", func(c *gin.Context) {
+				c.Set(userCtx, testCase.inputUserId)
+				handler.voteSuggestions(c)
+			})
+
+			// Test Request
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest("PUT", "/api/suggestions/1/vote",
+				bytes.NewBufferString(testCase.inputBody))
+
+			// Perform Request
+			r.ServeHTTP(w, req)
+
+			// Assert
+			assert.Equal(t, testCase.expectedStatusCode, w.Code)
+			assert.Equal(t, testCase.expectedRequestBody, w.Body.String())
+		})
+	}
+}

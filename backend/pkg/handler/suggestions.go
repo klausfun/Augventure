@@ -60,7 +60,7 @@ func (h *Handler) voteSuggestions(c *gin.Context) {
 
 	var input augventure.Vote
 	if err := c.BindJSON(&input); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		newErrorResponse(c, http.StatusBadRequest, "invalid input body")
 		return
 	}
 
